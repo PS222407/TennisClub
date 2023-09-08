@@ -13,7 +13,7 @@ public class TournamentService : ITournamentService
         _tournamentRepository = new TournamentRepository();
     }
 
-    public List<TournamentDto> GetAll()
+    public List<TournamentDto>? GetAll()
     {
         return Task.Run(async () => await _tournamentRepository.GetAll()).GetAwaiter().GetResult();
     }

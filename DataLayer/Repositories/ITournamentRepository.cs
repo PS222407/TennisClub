@@ -4,7 +4,7 @@ namespace DataLayer.Repositories;
 
 public interface ITournamentRepository
 {
-    public Task<List<TournamentDto>> GetAll();
+    public Task<List<TournamentDto>?> GetAll();
 
     public Task<TournamentDto?> FindById(int id);
 

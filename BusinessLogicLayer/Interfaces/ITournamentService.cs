@@ -4,7 +4,7 @@ namespace BusinessLogicLayer.Interfaces;
 
 public interface ITournamentService
 {
-    public List<TournamentDto> GetAll();
+    public List<TournamentDto>? GetAll();
 
     public TournamentDto? FindById(int id);
 

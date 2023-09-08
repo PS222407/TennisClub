@@ -5,9 +5,9 @@ namespace DataLayer.Repositories;
 
 public class TournamentRepository : Database, ITournamentRepository
 {
-    public Task<List<TournamentDto>> GetAll()
+    public Task<List<TournamentDto>?> GetAll()
     {
-        List<TournamentDto>? tournamentDtos = new List<TournamentDto>();
+        List<TournamentDto> tournamentDtos = new List<TournamentDto>();
         TaskCompletionSource<List<TournamentDto>?> tcs = new TaskCompletionSource<List<TournamentDto>?>();
         
         try
@@ -16,14 +16,7 @@ public class TournamentRepository : Database, ITournamentRepository
             {
                 conn.Open();
 
-                using (var cmd = new MySqlCommand("SELECT " +
-                                                        "`Id`," +
-                                                        "`Name`," +
-                                                        "`Description`," +
-                                                        "`Price`," +
-                                                        "`MaxMembers`," +
-                                                        "`StartDateTime`" +
-                                                  " FROM `Tournament`", conn))
+                using (var cmd = new MySqlCommand("SELECT `Id`,`Name`,`Description`,`Price`,`MaxMembers`,`StartDateTime` FROM `Tournament`", conn))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -39,7 +32,6 @@ public class TournamentRepository : Database, ITournamentRepository
                                 StartDateTime = reader.GetDateTime("startdatetime"),
                             });
                         }
-
                         tcs.SetResult(tournamentDtos);
 
                         return tcs.Task;
@@ -50,17 +42,13 @@ public class TournamentRepository : Database, ITournamentRepository
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-
             tcs.SetResult(null);
-
             return tcs.Task;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-
             tcs.SetResult(null);
-
             return tcs.Task;
         }
     }
@@ -75,14 +63,7 @@ public class TournamentRepository : Database, ITournamentRepository
             {
                 conn.Open();
 
-                using (var cmd = new MySqlCommand("SELECT " +
-                                                        "`Id`," +
-                                                        "`Name`," +
-                                                        "`Description`," +
-                                                        "`Price`," +
-                                                        "`MaxMembers`," +
-                                                        "`StartDateTime`" +
-                                                  "FROM `Tournament` WHERE `Id` = @Id", conn))
+                using (var cmd = new MySqlCommand("SELECT `Id`,`Name`,`Description`,`Price`,`MaxMembers`,`StartDateTime`FROM `Tournament` WHERE `Id` = @Id", conn))
                 {
                     cmd.Parameters.AddWithValue("@Id", id);
                     
@@ -99,14 +80,12 @@ public class TournamentRepository : Database, ITournamentRepository
                                 MaxMembers = reader.GetInt32("maxmembers"),
                                 StartDateTime = reader.GetDateTime("startdatetime"),
                             };
-                            
                             tcs.SetResult(tournamentDto);
-
+                            
                             return tcs.Task;
                         }
-                        
                         tcs.SetResult(null);
-
+                        
                         return tcs.Task;
                     }
                 }
@@ -115,17 +94,13 @@ public class TournamentRepository : Database, ITournamentRepository
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-
             tcs.SetResult(null);
-
             return tcs.Task;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-
             tcs.SetResult(null);
-
             return tcs.Task;
         }
     }
@@ -158,17 +133,13 @@ public class TournamentRepository : Database, ITournamentRepository
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
     }
@@ -183,13 +154,7 @@ public class TournamentRepository : Database, ITournamentRepository
             {
                 conn.Open();
                 ;
-                using (var cmd = new MySqlCommand("UPDATE `Tournament` SET " +
-                                                  "`Name` = @name, " +
-                                                  "`Description` = @description," +
-                                                  "`Price` = @price," +
-                                                  "`MaxMembers` = @maxMembers," +
-                                                  "`StartDateTime` = @startDateTime" +
-                                                  " WHERE `Id` = @id;", conn))
+                using (var cmd = new MySqlCommand("UPDATE `Tournament` SET `Name` = @name, `Description` = @description,`Price` = @price,`MaxMembers` = @maxMembers,`StartDateTime` = @startDateTime WHERE `Id` = @id;", conn))
                 {
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.Parameters.AddWithValue("@name", tournamentDto.Name);
@@ -208,17 +173,13 @@ public class TournamentRepository : Database, ITournamentRepository
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
     }
@@ -232,7 +193,7 @@ public class TournamentRepository : Database, ITournamentRepository
             using (var conn = new MySqlConnection(ConnectionString))
             {
                 conn.Open();
-                ;
+
                 using (var cmd = new MySqlCommand("DELETE FROM `Tournament` WHERE `Id` = @id", conn))
                 {
                     cmd.Parameters.AddWithValue("@id", id);
@@ -247,17 +208,13 @@ public class TournamentRepository : Database, ITournamentRepository
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
     }
