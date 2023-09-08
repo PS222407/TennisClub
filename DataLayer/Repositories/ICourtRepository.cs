@@ -4,7 +4,7 @@ namespace DataLayer.Repositories;
 
 public interface ICourtRepository
 {
-    public Task<List<CourtDto>?> GetAll();
+    public Task<List<CourtDto>> GetAll();
 
     public Task<CourtDto?> FindById(int id);
 

@@ -1,73 +1,32 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - TennisClub Admin</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/TennisClub_0._1.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    @* <link rel="stylesheet" href="~/TennisClub_0._1.styles.css" asp-append-version="true"/> *@
 </head>
 <body>
+<div class="main">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TennisClub_0.1</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TennisClub</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Courts" asp-action="Index">Courts</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Tournaments" asp-action="Index">Tournaments</a>
-                        </li>
+                        
                     </ul>
-                    <partial name="_LoginPartial" />
+                    <partial name="_LoginPartial"/>
                 </div>
             </div>
         </nav>
     </header>
-
-    <div class="sidebar">
-        <a href="#">Dashboard</a>
-        <a href="#">Users</a>
-        <a href="#">Products</a>
-        <a href="#">Orders</a>
-        <a href="#">Settings</a>
-    </div>
-
-    <style>
-        /* Custom CSS for the sidebar */
-        .sidebar {
-            height: 100%;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding-top: 20px;
-            background-color: #333;
-            color: #fff;
-        }
-
-        .sidebar a {
-            padding: 15px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 18px;
-            color: #fff;
-            display: block;
-        }
-
-        .sidebar a:hover {
-            background-color: #555;
-        }
-
-        /* Add media query for responsiveness */
-    </style>
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -80,9 +39,42 @@
             &copy; 2023 - TennisClub_0.1 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+</div>
+
+<div class="sidebar">
+    <a asp-area="Admin" asp-controller="Court" asp-action="Index">Courts</a>
+    <a asp-area="Admin" asp-controller="Tournament" asp-action="Index">Tournaments</a>
+</div>
+
+<style>
+    .main {
+        margin-left: 250px;
+    }
+    .sidebar {
+        height: 100%;
+        width: 250px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding-top: 20px;
+        background-color: #333;
+        color: #fff;
+    }
+    .sidebar a {
+        padding: 15px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 18px;
+        color: #fff;
+        display: block;
+    }
+    .sidebar a:hover {
+        background-color: #555;
+    }
+</style>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

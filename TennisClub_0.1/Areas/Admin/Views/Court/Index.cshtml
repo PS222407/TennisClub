@@ -1,8 +1,8 @@
 @model IEnumerable<TennisClub_0._1.Models.CourtViewModel>
 
 @{
-    ViewData["Title"] = "Index";
     Layout = "_AdminLayout";
+    ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
@@ -38,9 +38,9 @@
                 @Html.DisplayFor(modelItem => item.Double)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-area="Admin" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-area="Admin" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-area="Admin" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

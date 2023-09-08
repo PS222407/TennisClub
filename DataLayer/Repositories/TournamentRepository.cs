@@ -5,7 +5,7 @@ namespace DataLayer.Repositories;
 
 public class TournamentRepository : Database, ITournamentRepository
 {
-    public Task<List<TournamentDto>?> GetAll()
+    public Task<List<TournamentDto>> GetAll()
     {
         List<TournamentDto>? tournamentDtos = new List<TournamentDto>();
         TaskCompletionSource<List<TournamentDto>?> tcs = new TaskCompletionSource<List<TournamentDto>?>();
