@@ -83,6 +83,11 @@ public class TournamentController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Create(TournamentRequest tournamentRequest)
     {
+        if (!ModelState.IsValid)
+        {
+            return View();
+        }
+        
         try
         {
             TournamentDto tournamentDto = new TournamentDto()
@@ -138,6 +143,11 @@ public class TournamentController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Edit(int id, TournamentRequest tournamentRequest)
     {
+        if (!ModelState.IsValid)
+        {
+            return View();
+        }
+        
         try
         {
             TournamentDto tournamentDto = new TournamentDto()

@@ -1,4 +1,6 @@
-﻿namespace TennisClub_0._1.Requests;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TennisClub_0._1.Requests;
 
 public class TournamentRequest
 {
@@ -10,6 +12,7 @@ public class TournamentRequest
 
     public string Description { get; set; }
 
+    [Range(0, double.MaxValue, ErrorMessage = "Price must be a non-negative value.")]
     public int Price { get; set; }
 
     public DateTime StartDateTime { get; set; }
