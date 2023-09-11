@@ -27,7 +27,7 @@ public class TournamentController : Controller
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
 
-            return View();
+            return View(new List<TournamentViewModel>());
         }
 
         List<TournamentViewModel> tournamentViewModels = new List<TournamentViewModel>();

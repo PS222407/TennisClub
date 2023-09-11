@@ -27,7 +27,7 @@ public class CourtController : Controller
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
 
-            return View();
+            return View(new List<CourtViewModel>());
         }
 
         List<CourtViewModel> courtViewModels = new List<CourtViewModel>();

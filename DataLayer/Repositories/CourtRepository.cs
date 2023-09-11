@@ -9,34 +9,28 @@ public class CourtRepository : Database, ICourtRepository
     {
         List<CourtDto> courtDtos = new List<CourtDto>();
         TaskCompletionSource<List<CourtDto>?> tcs = new TaskCompletionSource<List<CourtDto>?>();
-        
+
         try
         {
-            using (var conn = new MySqlConnection(ConnectionString))
+            using var conn = new MySqlConnection(ConnectionString);
+            conn.Open();
+
+            using var cmd = new MySqlCommand("SELECT `Id`, `Double`, `Indoor`, `Number` FROM `Court`", conn);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                conn.Open();
-
-                using (var cmd = new MySqlCommand("SELECT `Id`, `Double`, `Indoor`, `Number` FROM `Court`", conn))
+                courtDtos.Add(new CourtDto
                 {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            courtDtos.Add(new CourtDto
-                            {
-                                Id = reader.GetInt32("id"),
-                                Double = reader.GetBoolean("double"),
-                                Indoor = reader.GetBoolean("indoor"),
-                                Number = reader.GetInt32("number"),
-                            });
-                        }
-
-                        tcs.SetResult(courtDtos);
-
-                        return tcs.Task;
-                    }
-                }
+                    Id = reader.GetInt32("id"),
+                    Double = reader.GetBoolean("double"),
+                    Indoor = reader.GetBoolean("indoor"),
+                    Number = reader.GetInt32("number"),
+                });
             }
+
+            tcs.SetResult(courtDtos);
+
+            return tcs.Task;
         }
         catch (MySqlException ex)
         {
@@ -51,44 +45,38 @@ public class CourtRepository : Database, ICourtRepository
             return tcs.Task;
         }
     }
-    
+
     public Task<CourtDto?> FindById(int id)
     {
         TaskCompletionSource<CourtDto?> tcs = new TaskCompletionSource<CourtDto?>();
-        
+
         try
         {
-            using (var conn = new MySqlConnection(ConnectionString))
+            using var conn = new MySqlConnection(ConnectionString);
+            conn.Open();
+
+            using var cmd = new MySqlCommand("SELECT `Id`, `Double`, `Indoor`, `Number` FROM `Court` WHERE `Id` = @Id", conn);
+            cmd.Parameters.AddWithValue("@Id", id);
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                conn.Open();
-
-                using (var cmd = new MySqlCommand("SELECT `Id`, `Double`, `Indoor`, `Number` FROM `Court` WHERE `Id` = @Id", conn))
+                CourtDto courtDto = new CourtDto
                 {
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            CourtDto courtDto = new CourtDto
-                            {
-                                Id = reader.GetInt32("id"),
-                                Double = reader.GetBoolean("double"),
-                                Indoor = reader.GetBoolean("indoor"),
-                                Number = reader.GetInt32("number"),  
-                            };
-                            
-                            tcs.SetResult(courtDto);
+                    Id = reader.GetInt32("id"),
+                    Double = reader.GetBoolean("double"),
+                    Indoor = reader.GetBoolean("indoor"),
+                    Number = reader.GetInt32("number"),
+                };
 
-                            return tcs.Task;
-                        }
-                        
-                        tcs.SetResult(null);
+                tcs.SetResult(courtDto);
 
-                        return tcs.Task;
-                    }
-                }
+                return tcs.Task;
             }
+
+            tcs.SetResult(null);
+
+            return tcs.Task;
         }
         catch (MySqlException ex)
         {
@@ -107,25 +95,21 @@ public class CourtRepository : Database, ICourtRepository
     public Task<bool> Create(CourtDto courtDto)
     {
         TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-        
+
         try
         {
-            using (var conn = new MySqlConnection(ConnectionString))
-            {
-                conn.Open();
+            using var conn = new MySqlConnection(ConnectionString);
+            conn.Open();
 
-                using (var cmd = new MySqlCommand("INSERT INTO `Court` (`Id`, `Number`, `Indoor`, `Double`) VALUES (NULL, @number, @indoor, @double);", conn))
-                {
-                    cmd.Parameters.AddWithValue("@number", courtDto.Number);
-                    cmd.Parameters.AddWithValue("@indoor", courtDto.Indoor);
-                    cmd.Parameters.AddWithValue("@double", courtDto.Double);
-                    
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    tcs.SetResult(rowsAffected > 0);
+            using var cmd = new MySqlCommand("INSERT INTO `Court` (`Id`, `Number`, `Indoor`, `Double`) VALUES (NULL, @number, @indoor, @double);", conn);
+            cmd.Parameters.AddWithValue("@number", courtDto.Number);
+            cmd.Parameters.AddWithValue("@indoor", courtDto.Indoor);
+            cmd.Parameters.AddWithValue("@double", courtDto.Double);
 
-                    return tcs.Task;
-                }
-            }
+            int rowsAffected = cmd.ExecuteNonQuery();
+            tcs.SetResult(rowsAffected > 0);
+
+            return tcs.Task;
         }
         catch (MySqlException ex)
         {
@@ -144,26 +128,22 @@ public class CourtRepository : Database, ICourtRepository
     public Task<bool> Edit(int id, CourtDto courtDto)
     {
         TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-        
+
         try
         {
-            using (var conn = new MySqlConnection(ConnectionString))
-            {
-                conn.Open();
+            using var conn = new MySqlConnection(ConnectionString);
+            conn.Open();
 
-                using (var cmd = new MySqlCommand("UPDATE `Court` SET `Number` = @number, `Indoor` = @indoor,`Double` = @double WHERE `Id` = @id;", conn))
-                {
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.Parameters.AddWithValue("@number", courtDto.Number);
-                    cmd.Parameters.AddWithValue("@indoor", courtDto.Indoor);
-                    cmd.Parameters.AddWithValue("@double", courtDto.Double);
-                    
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    tcs.SetResult(rowsAffected > 0);
+            using var cmd = new MySqlCommand("UPDATE `Court` SET `Number` = @number, `Indoor` = @indoor,`Double` = @double WHERE `Id` = @id;", conn);
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("@number", courtDto.Number);
+            cmd.Parameters.AddWithValue("@indoor", courtDto.Indoor);
+            cmd.Parameters.AddWithValue("@double", courtDto.Double);
 
-                    return tcs.Task;
-                }
-            }
+            int rowsAffected = cmd.ExecuteNonQuery();
+            tcs.SetResult(rowsAffected > 0);
+
+            return tcs.Task;
         }
         catch (MySqlException ex)
         {
@@ -182,23 +162,19 @@ public class CourtRepository : Database, ICourtRepository
     public Task<bool> Delete(int id)
     {
         TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-        
+
         try
         {
-            using (var conn = new MySqlConnection(ConnectionString))
-            {
-                conn.Open();
-                ;
-                using (var cmd = new MySqlCommand("DELETE FROM `Court` WHERE `Id` = @id", conn))
-                {
-                    cmd.Parameters.AddWithValue("@id", id);
-                    
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    tcs.SetResult(rowsAffected > 0);
+            using var conn = new MySqlConnection(ConnectionString);
+            conn.Open();
 
-                    return tcs.Task;
-                }
-            }
+            using var cmd = new MySqlCommand("DELETE FROM `Court` WHERE `Id` = @id", conn);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            int rowsAffected = cmd.ExecuteNonQuery();
+            tcs.SetResult(rowsAffected > 0);
+
+            return tcs.Task;
         }
         catch (MySqlException ex)
         {
