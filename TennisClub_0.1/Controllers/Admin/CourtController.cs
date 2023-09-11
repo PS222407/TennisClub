@@ -21,11 +21,19 @@ public class CourtController : Controller
     // GET: Courts
     public ActionResult Index()
     {
-        List<CourtDto> courtDtos = _courtService.GetAll();
+        List<CourtDto>? courtDtos = _courtService.GetAll();
+        if (courtDtos == null)
+        {
+            TempData["Message"] = "Fout tijdens het ophalen van data.";
+            TempData["MessageType"] = "success";
+            
+            return View();
+        }
+        
         List<CourtViewModel> courtViewModels = new List<CourtViewModel>();
         foreach (CourtDto courtDto in courtDtos)
         {
-            courtViewModels.Add(new CourtViewModel()
+            courtViewModels.Add(new CourtViewModel
             {
                 Id = courtDto.Id,
                 Double = courtDto.Double,
@@ -41,7 +49,15 @@ public class CourtController : Controller
     public ActionResult Details(int id)
     {
         CourtDto? courtDto = _courtService.FindById(id);
-        CourtViewModel courtViewModel = new CourtViewModel()
+        if (courtDto == null)
+        {
+            TempData["Message"] = "Fout tijdens het ophalen van data.";
+            TempData["MessageType"] = "success";
+            
+            return View();
+        }
+        
+        CourtViewModel courtViewModel = new CourtViewModel
         {
             Id = courtDto.Id,
             Double = courtDto.Double,
@@ -63,6 +79,11 @@ public class CourtController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Create(CourtRequest courtRequest)
     {
+        if (!ModelState.IsValid)
+        {
+            return View();
+        }
+
         try
         {
             CourtDto courtDto = new CourtDto()
@@ -71,10 +92,10 @@ public class CourtController : Controller
                 Indoor = courtRequest.Indoor,
                 Number = courtRequest.Number,
             };
-            bool success = _courtService.Create(courtDto);
-            // TODO: Add logic here
-            if (!success)
+            if (!_courtService.Create(courtDto))
             {
+                TempData["Message"] = "Fout tijdens het aanmaken.";
+                TempData["MessageType"] = "success";
                 return View();
             }
     
@@ -90,6 +111,14 @@ public class CourtController : Controller
     public ActionResult Edit(int id)
     {
         CourtDto? courtDto = _courtService.FindById(id);
+        if (courtDto == null)
+        {
+            TempData["Message"] = "Fout tijdens het ophalen van data.";
+            TempData["MessageType"] = "success";
+            
+            return View();
+        }
+        
         CourtViewModel courtViewModel = new CourtViewModel()
         {
             Id = courtDto.Id,
@@ -106,18 +135,24 @@ public class CourtController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Edit(int id, CourtRequest courtRequest)
     {
+        if (!ModelState.IsValid)
+        {
+            return View();
+        }
+
         try
         {
-            CourtDto courtDto = new CourtDto()
+            CourtDto courtDto = new CourtDto
             {
                 Double = courtRequest.Double,
                 Indoor = courtRequest.Indoor,
                 Number = courtRequest.Number,
             };
-            bool success = _courtService.Edit(id, courtDto);
-            // TODO: Add logic here
-            if (!success)
+            if (!_courtService.Edit(id, courtDto))
             {
+                TempData["Message"] = "Fout tijdens het opslaan van de data.";
+                TempData["MessageType"] = "success";
+            
                 return View();
             }
     
@@ -133,7 +168,15 @@ public class CourtController : Controller
     public ActionResult Delete(int id)
     {
         CourtDto? courtDto = _courtService.FindById(id);
-        CourtViewModel courtViewModel = new CourtViewModel()
+        if (courtDto == null)
+        {
+            TempData["Message"] = "Fout tijdens het ophalen van de data.";
+            TempData["MessageType"] = "success";
+            
+            return View();
+        }
+        
+        CourtViewModel courtViewModel = new CourtViewModel
         {
             Id = courtDto.Id,
             Double = courtDto.Double,
@@ -151,10 +194,11 @@ public class CourtController : Controller
     {
         try
         {
-            bool success = _courtService.Delete(id);
-            // TODO: Add logic here
-            if (!success)
+            if (!_courtService.Delete(id))
             {
+                TempData["Message"] = "Fout tijdens het verwijderen van de data.";
+                TempData["MessageType"] = "success";
+            
                 return View("Delete");
             }
     

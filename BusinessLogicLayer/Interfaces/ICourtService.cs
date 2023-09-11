@@ -4,7 +4,7 @@ namespace BusinessLogicLayer.Interfaces;
 
 public interface ICourtService
 {
-    public List<CourtDto> GetAll();
+    public List<CourtDto>? GetAll();
 
     public CourtDto? FindById(int id);
 

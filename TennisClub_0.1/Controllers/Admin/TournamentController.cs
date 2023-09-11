@@ -59,7 +59,7 @@ public class TournamentController : Controller
             return View();
         }
         
-        TournamentViewModel tournamentViewModel = new TournamentViewModel()
+        TournamentViewModel tournamentViewModel = new TournamentViewModel
         {
             Id = tournamentDto.Id,
             Name = tournamentDto.Name,
@@ -150,7 +150,7 @@ public class TournamentController : Controller
         
         try
         {
-            TournamentDto tournamentDto = new TournamentDto()
+            TournamentDto tournamentDto = new TournamentDto
             {
                 Name = tournamentRequest.Name,
                 Description = tournamentRequest.Description,
@@ -186,7 +186,7 @@ public class TournamentController : Controller
             return View();
         }
         
-        TournamentViewModel tournamentViewModel = new TournamentViewModel()
+        TournamentViewModel tournamentViewModel = new TournamentViewModel
         {
             Id = tournamentDto.Id,
             Name = tournamentDto.Name,

@@ -5,7 +5,7 @@ namespace DataLayer.Repositories;
 
 public class CourtRepository : Database, ICourtRepository
 {
-    public Task<List<CourtDto>> GetAll()
+    public Task<List<CourtDto>?> GetAll()
     {
         List<CourtDto> courtDtos = new List<CourtDto>();
         TaskCompletionSource<List<CourtDto>?> tcs = new TaskCompletionSource<List<CourtDto>?>();
@@ -16,13 +16,13 @@ public class CourtRepository : Database, ICourtRepository
             {
                 conn.Open();
 
-                using (var cmd = new MySqlCommand("SELECT * FROM `Court`", conn))
+                using (var cmd = new MySqlCommand("SELECT `Id`, `Double`, `Indoor`, `Number` FROM `Court`", conn))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            courtDtos.Add(new CourtDto()
+                            courtDtos.Add(new CourtDto
                             {
                                 Id = reader.GetInt32("id"),
                                 Double = reader.GetBoolean("double"),
@@ -41,17 +41,13 @@ public class CourtRepository : Database, ICourtRepository
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-
             tcs.SetResult(null);
-
             return tcs.Task;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-
             tcs.SetResult(null);
-
             return tcs.Task;
         }
     }
@@ -66,7 +62,7 @@ public class CourtRepository : Database, ICourtRepository
             {
                 conn.Open();
 
-                using (var cmd = new MySqlCommand("SELECT * FROM `Court` WHERE `Id` = @Id", conn))
+                using (var cmd = new MySqlCommand("SELECT `Id`, `Double`, `Indoor`, `Number` FROM `Court` WHERE `Id` = @Id", conn))
                 {
                     cmd.Parameters.AddWithValue("@Id", id);
                     
@@ -74,7 +70,7 @@ public class CourtRepository : Database, ICourtRepository
                     {
                         while (reader.Read())
                         {
-                            CourtDto courtDto = new CourtDto()
+                            CourtDto courtDto = new CourtDto
                             {
                                 Id = reader.GetInt32("id"),
                                 Double = reader.GetBoolean("double"),
@@ -97,17 +93,13 @@ public class CourtRepository : Database, ICourtRepository
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-
             tcs.SetResult(null);
-
             return tcs.Task;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-
             tcs.SetResult(null);
-
             return tcs.Task;
         }
     }
@@ -122,8 +114,7 @@ public class CourtRepository : Database, ICourtRepository
             {
                 conn.Open();
 
-                using (var cmd = new MySqlCommand("INSERT INTO `Court` (`Id`, `Number`, `Indoor`, `Double`) " +
-                                                  "VALUES (NULL, @number, @indoor, @double);", conn))
+                using (var cmd = new MySqlCommand("INSERT INTO `Court` (`Id`, `Number`, `Indoor`, `Double`) VALUES (NULL, @number, @indoor, @double);", conn))
                 {
                     cmd.Parameters.AddWithValue("@number", courtDto.Number);
                     cmd.Parameters.AddWithValue("@indoor", courtDto.Indoor);
@@ -139,17 +130,13 @@ public class CourtRepository : Database, ICourtRepository
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
     }
@@ -163,12 +150,8 @@ public class CourtRepository : Database, ICourtRepository
             using (var conn = new MySqlConnection(ConnectionString))
             {
                 conn.Open();
-                ;
-                using (var cmd = new MySqlCommand("UPDATE `Court` SET " +
-                                                  "`Number` = @number, " +
-                                                  "`Indoor` = @indoor," +
-                                                  "`Double` = @double" +
-                                                  " WHERE `Id` = @id;", conn))
+
+                using (var cmd = new MySqlCommand("UPDATE `Court` SET `Number` = @number, `Indoor` = @indoor,`Double` = @double WHERE `Id` = @id;", conn))
                 {
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.Parameters.AddWithValue("@number", courtDto.Number);
@@ -185,17 +168,13 @@ public class CourtRepository : Database, ICourtRepository
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
     }
@@ -224,17 +203,13 @@ public class CourtRepository : Database, ICourtRepository
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-
             tcs.SetResult(false);
-
             return tcs.Task;
         }
     }

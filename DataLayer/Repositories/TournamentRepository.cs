@@ -22,7 +22,7 @@ public class TournamentRepository : Database, ITournamentRepository
                     {
                         while (reader.Read())
                         {
-                            tournamentDtos.Add(new TournamentDto()
+                            tournamentDtos.Add(new TournamentDto
                             {
                                 Id = reader.GetInt32("id"),
                                 Name = reader.GetString("name"),
@@ -71,7 +71,7 @@ public class TournamentRepository : Database, ITournamentRepository
                     {
                         while (reader.Read())
                         {
-                            TournamentDto tournamentDto = new TournamentDto()
+                            TournamentDto tournamentDto = new TournamentDto
                             {
                                 Id = reader.GetInt32("id"),
                                 Name = reader.GetString("name"),
@@ -153,7 +153,7 @@ public class TournamentRepository : Database, ITournamentRepository
             using (var conn = new MySqlConnection(ConnectionString))
             {
                 conn.Open();
-                ;
+
                 using (var cmd = new MySqlCommand("UPDATE `Tournament` SET `Name` = @name, `Description` = @description,`Price` = @price,`MaxMembers` = @maxMembers,`StartDateTime` = @startDateTime WHERE `Id` = @id;", conn))
                 {
                     cmd.Parameters.AddWithValue("@id", id);

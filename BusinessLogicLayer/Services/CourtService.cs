@@ -13,7 +13,7 @@ public class CourtService : ICourtService
         _courtRepository = new CourtRepository();
     }
     
-    public List<CourtDto> GetAll()
+    public List<CourtDto>? GetAll()
     {
         return Task.Run(async () => await _courtRepository.GetAll()).GetAwaiter().GetResult();
     }
