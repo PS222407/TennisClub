@@ -1,0 +1,21 @@
+@model IEnumerable<TennisClub_0._1.Models.TournamentViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+@foreach (var item in Model) {
+    <div class="container row mb-5">
+        <img class="col-md-3" src="images/tournament.jpg" alt="">
+        <div class="col-md-6">
+            <div> @Html.DisplayFor(modelItem => item.Name) </div>
+            <div> @Html.DisplayFor(modelItem => item.Description)</div>
+        </div>
+        <div class="col-md-3 border-start">
+            <div class="d-flex align-items-center justify-content-center h-100">
+                <a class="btn btn-primary" asp-area="" asp-controller="Tournament" asp-action="Details" asp-route-id="@item.Id">Klik hier om te bekijken</a>
+            </div>
+        </div>
+    </div>
+}
