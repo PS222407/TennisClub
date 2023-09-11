@@ -25,11 +25,11 @@ public class TournamentController : Controller
         if (tournamentDtos == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
-            TempData["MessageType"] = "success";
-            
+            TempData["MessageType"] = "danger";
+
             return View();
         }
-        
+
         List<TournamentViewModel> tournamentViewModels = new List<TournamentViewModel>();
         foreach (TournamentDto tournamentDto in tournamentDtos)
         {
@@ -54,11 +54,11 @@ public class TournamentController : Controller
         if (tournamentDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
-            TempData["MessageType"] = "success";
-            
+            TempData["MessageType"] = "danger";
+
             return View();
         }
-        
+
         TournamentViewModel tournamentViewModel = new TournamentViewModel
         {
             Id = tournamentDto.Id,
@@ -87,30 +87,26 @@ public class TournamentController : Controller
         {
             return View();
         }
-        
-        try
-        {
-            TournamentDto tournamentDto = new TournamentDto()
-            {
-                Name = tournamentRequest.Name,
-                Description = tournamentRequest.Description,
-                Price = tournamentRequest.Price,
-                MaxMembers = tournamentRequest.MaxMembers,
-                StartDateTime = tournamentRequest.StartDateTime,
-            };
-            if (!_tournamentService.Create(tournamentDto))
-            {
-                TempData["Message"] = "Fout tijdens het aanmaken.";
-                TempData["MessageType"] = "success";
-                return View();
-            }
 
-            return RedirectToAction(nameof(Index));
-        }
-        catch
+        TournamentDto tournamentDto = new TournamentDto
         {
+            Name = tournamentRequest.Name,
+            Description = tournamentRequest.Description,
+            Price = tournamentRequest.Price,
+            MaxMembers = tournamentRequest.MaxMembers,
+            StartDateTime = tournamentRequest.StartDateTime,
+        };
+        if (!_tournamentService.Create(tournamentDto))
+        {
+            TempData["Message"] = "Fout tijdens het aanmaken.";
+            TempData["MessageType"] = "danger";
             return View();
         }
+
+        TempData["Message"] = "Item succesvol aangemaakt";
+        TempData["MessageType"] = "success";
+
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: Tournaments/Edit/5
@@ -120,11 +116,11 @@ public class TournamentController : Controller
         if (tournamentDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
-            TempData["MessageType"] = "success";
-            
+            TempData["MessageType"] = "danger";
+
             return View();
         }
-        
+
         TournamentViewModel tournamentViewModel = new TournamentViewModel()
         {
             Id = tournamentDto.Id,
@@ -147,31 +143,27 @@ public class TournamentController : Controller
         {
             return View();
         }
-        
-        try
-        {
-            TournamentDto tournamentDto = new TournamentDto
-            {
-                Name = tournamentRequest.Name,
-                Description = tournamentRequest.Description,
-                Price = tournamentRequest.Price,
-                MaxMembers = tournamentRequest.MaxMembers,
-                StartDateTime = tournamentRequest.StartDateTime,
-            };
-            if (!_tournamentService.Edit(id, tournamentDto))
-            {
-                TempData["Message"] = "Fout tijdens het opslaan van de data.";
-                TempData["MessageType"] = "success";
-            
-                return View();
-            }
 
-            return RedirectToAction(nameof(Index));
-        }
-        catch
+        TournamentDto tournamentDto = new TournamentDto
         {
+            Name = tournamentRequest.Name,
+            Description = tournamentRequest.Description,
+            Price = tournamentRequest.Price,
+            MaxMembers = tournamentRequest.MaxMembers,
+            StartDateTime = tournamentRequest.StartDateTime,
+        };
+        if (!_tournamentService.Edit(id, tournamentDto))
+        {
+            TempData["Message"] = "Fout tijdens het opslaan van de data.";
+            TempData["MessageType"] = "danger";
+
             return View();
         }
+
+        TempData["Message"] = "Item succesvol gewijzigd";
+        TempData["MessageType"] = "success";
+
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: Tournaments/Delete/5
@@ -181,11 +173,11 @@ public class TournamentController : Controller
         if (tournamentDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van de data.";
-            TempData["MessageType"] = "success";
-            
+            TempData["MessageType"] = "danger";
+
             return View();
         }
-        
+
         TournamentViewModel tournamentViewModel = new TournamentViewModel
         {
             Id = tournamentDto.Id,
@@ -204,21 +196,17 @@ public class TournamentController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Destroy(int id)
     {
-        try
+        if (!_tournamentService.Delete(id))
         {
-            if (!_tournamentService.Delete(id))
-            {
-                TempData["Message"] = "Fout tijdens het verwijderen van de data.";
-                TempData["MessageType"] = "success";
-            
-                return View("Delete");
-            }
+            TempData["Message"] = "Fout tijdens het verwijderen van de data.";
+            TempData["MessageType"] = "danger";
 
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
             return View("Delete");
         }
+
+        TempData["Message"] = "Item succesvol verwijderd";
+        TempData["MessageType"] = "success";
+
+        return RedirectToAction(nameof(Index));
     }
 }

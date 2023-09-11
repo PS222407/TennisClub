@@ -25,11 +25,11 @@ public class CourtController : Controller
         if (courtDtos == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
-            TempData["MessageType"] = "success";
-            
+            TempData["MessageType"] = "danger";
+
             return View();
         }
-        
+
         List<CourtViewModel> courtViewModels = new List<CourtViewModel>();
         foreach (CourtDto courtDto in courtDtos)
         {
@@ -52,11 +52,11 @@ public class CourtController : Controller
         if (courtDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
-            TempData["MessageType"] = "success";
-            
+            TempData["MessageType"] = "danger";
+
             return View();
         }
-        
+
         CourtViewModel courtViewModel = new CourtViewModel
         {
             Id = courtDto.Id,
@@ -64,7 +64,7 @@ public class CourtController : Controller
             Indoor = courtDto.Indoor,
             Number = courtDto.Number,
         };
-    
+
         return View(courtViewModel);
     }
 
@@ -73,7 +73,7 @@ public class CourtController : Controller
     {
         return View();
     }
-    
+
     // POST: Courts/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -84,29 +84,25 @@ public class CourtController : Controller
             return View();
         }
 
-        try
+        CourtDto courtDto = new CourtDto()
         {
-            CourtDto courtDto = new CourtDto()
-            {
-                Double = courtRequest.Double,
-                Indoor = courtRequest.Indoor,
-                Number = courtRequest.Number,
-            };
-            if (!_courtService.Create(courtDto))
-            {
-                TempData["Message"] = "Fout tijdens het aanmaken.";
-                TempData["MessageType"] = "success";
-                return View();
-            }
-    
-            return RedirectToAction(nameof(Index));
-        }
-        catch
+            Double = courtRequest.Double,
+            Indoor = courtRequest.Indoor,
+            Number = courtRequest.Number,
+        };
+        if (!_courtService.Create(courtDto))
         {
+            TempData["Message"] = "Fout tijdens het aanmaken.";
+            TempData["MessageType"] = "danger";
             return View();
         }
+
+        TempData["Message"] = "Item succesvol aangemaakt";
+        TempData["MessageType"] = "success";
+
+        return RedirectToAction(nameof(Index));
     }
-    
+
     // GET: Courts/Edit/5
     public ActionResult Edit(int id)
     {
@@ -114,11 +110,11 @@ public class CourtController : Controller
         if (courtDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
-            TempData["MessageType"] = "success";
-            
+            TempData["MessageType"] = "danger";
+
             return View();
         }
-        
+
         CourtViewModel courtViewModel = new CourtViewModel()
         {
             Id = courtDto.Id,
@@ -126,10 +122,10 @@ public class CourtController : Controller
             Indoor = courtDto.Indoor,
             Number = courtDto.Number,
         };
-        
+
         return View(courtViewModel);
     }
-    
+
     // POST: Courts/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -140,30 +136,26 @@ public class CourtController : Controller
             return View();
         }
 
-        try
+        CourtDto courtDto = new CourtDto
         {
-            CourtDto courtDto = new CourtDto
-            {
-                Double = courtRequest.Double,
-                Indoor = courtRequest.Indoor,
-                Number = courtRequest.Number,
-            };
-            if (!_courtService.Edit(id, courtDto))
-            {
-                TempData["Message"] = "Fout tijdens het opslaan van de data.";
-                TempData["MessageType"] = "success";
-            
-                return View();
-            }
-    
-            return RedirectToAction(nameof(Index));
-        }
-        catch
+            Double = courtRequest.Double,
+            Indoor = courtRequest.Indoor,
+            Number = courtRequest.Number,
+        };
+        if (!_courtService.Edit(id, courtDto))
         {
+            TempData["Message"] = "Fout tijdens het opslaan van de data.";
+            TempData["MessageType"] = "danger";
+
             return View();
         }
+
+        TempData["Message"] = "Item succesvol gewijzigd";
+        TempData["MessageType"] = "success";
+
+        return RedirectToAction(nameof(Index));
     }
-    
+
     // GET: Courts/Delete/5
     public ActionResult Delete(int id)
     {
@@ -171,11 +163,11 @@ public class CourtController : Controller
         if (courtDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van de data.";
-            TempData["MessageType"] = "success";
-            
+            TempData["MessageType"] = "danger";
+
             return View();
         }
-        
+
         CourtViewModel courtViewModel = new CourtViewModel
         {
             Id = courtDto.Id,
@@ -183,30 +175,26 @@ public class CourtController : Controller
             Indoor = courtDto.Indoor,
             Number = courtDto.Number,
         };
-        
+
         return View(courtViewModel);
     }
-    
+
     // POST: Courts/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Destroy(int id)
     {
-        try
+        if (!_courtService.Delete(id))
         {
-            if (!_courtService.Delete(id))
-            {
-                TempData["Message"] = "Fout tijdens het verwijderen van de data.";
-                TempData["MessageType"] = "success";
-            
-                return View("Delete");
-            }
-    
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
+            TempData["Message"] = "Fout tijdens het verwijderen van de data.";
+            TempData["MessageType"] = "danger";
+
             return View("Delete");
         }
+
+        TempData["Message"] = "Item succesvol verwijderd";
+        TempData["MessageType"] = "success";
+
+        return RedirectToAction(nameof(Index));
     }
 }
