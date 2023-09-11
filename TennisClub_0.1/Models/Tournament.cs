@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿namespace TennisClub_0._1.Models;
 
-namespace TennisClub_0._1.Models;
-
-public class TournamentViewModel
+public class Tournament
 {
     public int Id { get; set; }
 
@@ -15,8 +13,8 @@ public class TournamentViewModel
     public int MaxMembers { get; set; }
 
     public DateTime StartDateTime { get; set; }
+
+    public required List<Court> Courts { get; set; }
     
-    public List<int>? SelectedCourtIds { get; set; }
-    
-    public List<SelectListItem>? CourtOptions { get; set; }
+    public List<User>? Users { get; set; }
 }

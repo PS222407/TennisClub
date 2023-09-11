@@ -13,4 +13,6 @@ public class TournamentDto
     public int MaxMembers { get; set; }
 
     public DateTime StartDateTime { get; set; }
+
+    public List<int>? CourtIds { get; set; }
 }

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using DataLayer.Dtos;
+using TennisClub_0._1.Models;
 
 namespace TennisClub_0._1.Data
 {
@@ -11,8 +11,8 @@ namespace TennisClub_0._1.Data
         {
         }
         
-        public DbSet<TournamentDto> Tournament { get; set; } = default!;
+        public DbSet<Tournament> Tournament { get; set; } = default!;
         
-        public DbSet<CourtDto> Court { get; set; } = default!;
+        public DbSet<Court> Court { get; set; } = default!;
     }
 }

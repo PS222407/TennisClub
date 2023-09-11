@@ -2,6 +2,7 @@
 using DataLayer.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using TennisClub_0._1.Models;
 using TennisClub_0._1.Requests;
 
@@ -13,9 +14,12 @@ public class TournamentController : Controller
 {
     private readonly ITournamentService _tournamentService;
 
-    public TournamentController(ITournamentService tournamentService)
+    private readonly ICourtService _courtService;
+
+    public TournamentController(ITournamentService tournamentService, ICourtService courtService)
     {
         _tournamentService = tournamentService;
+        _courtService = courtService;
     }
 
     // GET: Tournaments
@@ -75,7 +79,18 @@ public class TournamentController : Controller
     // GET: Tournaments/Create
     public ActionResult Create()
     {
-        return View();
+        List<CourtDto>? courtDtos = _courtService.GetAll();
+
+        TournamentViewModel tournamentViewModel = new TournamentViewModel
+        {
+            CourtOptions = courtDtos?.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Number.ToString(),
+            }).ToList(),
+        };
+
+        return View(tournamentViewModel);
     }
 
     // POST: Tournaments/Create
@@ -95,6 +110,7 @@ public class TournamentController : Controller
             Price = tournamentRequest.Price,
             MaxMembers = tournamentRequest.MaxMembers,
             StartDateTime = tournamentRequest.StartDateTime,
+            CourtIds = tournamentRequest.SelectedCourtIds,
         };
         if (!_tournamentService.Create(tournamentDto))
         {
@@ -121,6 +137,8 @@ public class TournamentController : Controller
             return View();
         }
 
+        List<CourtDto>? courtDtos = _courtService.GetAll();
+
         TournamentViewModel tournamentViewModel = new TournamentViewModel()
         {
             Id = tournamentDto.Id,
@@ -129,6 +147,12 @@ public class TournamentController : Controller
             Price = tournamentDto.Price,
             MaxMembers = tournamentDto.MaxMembers,
             StartDateTime = tournamentDto.StartDateTime,
+            CourtOptions = courtDtos?.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Number.ToString(),
+            }).ToList(),
+            SelectedCourtIds = tournamentDto.CourtIds,
         };
 
         return View(tournamentViewModel);

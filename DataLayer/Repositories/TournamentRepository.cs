@@ -71,6 +71,7 @@ public class TournamentRepository : Database, ITournamentRepository
                     Price = reader.GetInt32("price"),
                     MaxMembers = reader.GetInt32("maxmembers"),
                     StartDateTime = reader.GetDateTime("startdatetime"),
+                    CourtIds = // TODO haal ids op van gekoppelde ids,
                 };
                 tcs.SetResult(tournamentDto);
 
@@ -104,16 +105,33 @@ public class TournamentRepository : Database, ITournamentRepository
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
 
-            using var cmd = new MySqlCommand(
-                "INSERT INTO `Tournament` (`Name`, `Description`, `Price`, `MaxMembers`, `StartDateTime`) VALUES (@name, @description, @price, @maxMembers, @startDateTime);", conn);
+            using var cmd = new MySqlCommand("INSERT INTO `Tournament` (`Name`, `Description`, `Price`, `MaxMembers`, `StartDateTime`) VALUES (@name, @description, @price, @maxMembers, @startDateTime); SELECT LAST_INSERT_ID();", conn);
             cmd.Parameters.AddWithValue("@name", tournamentDto.Name);
             cmd.Parameters.AddWithValue("@description", tournamentDto.Description);
             cmd.Parameters.AddWithValue("@price", tournamentDto.Price);
             cmd.Parameters.AddWithValue("@maxMembers", tournamentDto.MaxMembers);
             cmd.Parameters.AddWithValue("@startDateTime", tournamentDto.StartDateTime);
+            object? lastInsertedId = cmd.ExecuteScalar();
+            bool tournamentSuccess = lastInsertedId != null;
 
-            int rowsAffected = cmd.ExecuteNonQuery();
-            tcs.SetResult(rowsAffected > 0);
+            bool pivotSuccess = true;
+            if (tournamentDto.CourtIds != null)
+            {
+                using var cmdPivot = new MySqlCommand("INSERT INTO `CourtTournament` (`CourtsId`, `TournamentsId`) VALUES (@courtsid, @tournamentsid);", conn);
+                foreach (int courtId in tournamentDto.CourtIds)
+                {
+                    cmdPivot.Parameters.Clear();
+                    cmdPivot.Parameters.AddWithValue("@courtsid", courtId);
+                    cmdPivot.Parameters.AddWithValue("@tournamentsid", lastInsertedId);
+
+                    if (cmdPivot.ExecuteNonQuery() <= 0)
+                    {
+                        pivotSuccess = false;
+                    }
+                }
+            }
+
+            tcs.SetResult(tournamentSuccess && pivotSuccess);
 
             return tcs.Task;
         }
