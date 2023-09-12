@@ -1,63 +1,29 @@
 @model TennisClub_0._1.Models.TournamentViewModel
 
 @{
+    ViewData["Title"] = Model.Name;
     Layout = "_Layout";
-    ViewData["Title"] = "Detail";
 }
 
-<h1>Details</h1>
-
 <div>
-    <h4>Tournament</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaxMembers)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaxMembers)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDateTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDateTime)
-        </dd>
-        <dt class="col-sm-2">
-            CourtNumbers:
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.Courts != null && Model.Courts.Any())
-            {
-                <ul>
-                    @foreach (CourtViewModel court in Model.Courts)
-                    {
-                        <li>@court.Number</li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <p>No courts selected</p>
-            }
-        </dd>
-    </dl>
+    <h4>Toernooi: @Html.DisplayFor(model => model.Name)</h4>
+    <hr/>
+
+    <div class="container row mb-5">
+        <img class="col-md-4" src="~/images/tournament.jpg" alt="">
+        <div class="col-md-8">
+            <div> @Html.DisplayFor(model => model.Name) </div>
+            <div> @Html.DisplayFor(model => model.Description)</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="mb-2">Prijs: @Html.DisplayFor(model => model.Price)</div>
+            <div class="mb-2">Nog ? //TODO plekken over</div>
+        </div>
+        <div class="col-md-8"></div>
+        <div class="col-md-2">
+            <a class="btn btn-primary" asp-area="" asp-controller="Tournament" asp-action="Details" asp-route-id="1">Schrijf je hier in!</a>
+        </div>
+    </div>
 </div>
