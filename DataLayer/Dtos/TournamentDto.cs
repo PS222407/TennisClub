@@ -14,7 +14,10 @@ public class TournamentDto
 
     public DateTime StartDateTime { get; set; }
 
-    public List<CourtDto>? Courts { get; set; }
+    //TODO: IReadOnlyList
+    public List<UserDto> Users { get; set; } = new();
+
+    public List<CourtDto> Courts { get; set; } = new();
 
     private List<int>? _courtIds;
     
@@ -29,5 +32,21 @@ public class TournamentDto
             return _courtIds;
         }
         set => _courtIds = value;
+    }
+
+    public void AddUser(UserDto userDto)
+    {
+        if (!Users.Any(user => user.Id == userDto.Id))
+        {
+            Users.Add(userDto);
+        }
+    }
+
+    public void AddCourt(CourtDto courtDto)
+    {
+        if (!Courts.Any(court => court.Id == courtDto.Id))
+        {
+            Courts.Add(courtDto);
+        }
     }
 }

@@ -16,6 +16,9 @@ public class TournamentViewModel
 
     public DateTime StartDateTime { get; set; }
 
+    //TODO viewmodel
+    public List<User>? Participants { get; set; }
+    
     public List<CourtViewModel>? Courts { get; set; }
     
     public List<int>? SelectedCourtIds { get; set; }

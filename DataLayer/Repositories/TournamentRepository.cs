@@ -52,7 +52,8 @@ public class TournamentRepository : Database, ITournamentRepository
     {
         TournamentDto tournamentDto = new TournamentDto
         {
-            Courts = new List<CourtDto>()
+            Courts = new List<CourtDto>(),
+            Users = new List<UserDto>(),
         };
         TaskCompletionSource<TournamentDto?> tcs = new TaskCompletionSource<TournamentDto?>();
 
@@ -60,16 +61,21 @@ public class TournamentRepository : Database, ITournamentRepository
         {
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
-            
-            using var cmd = new MySqlCommand("SELECT t.Id, t.Name, t.Description, t.Price, t.MaxMembers, t.StartDateTime, c.Id AS c_Id, c.Number AS c_Number, c.Indoor AS c_Indoor, c.Double AS c_Double " +
+
+            using var cmd = new MySqlCommand("SELECT t.Id, t.Name, t.Description, t.Price, t.MaxMembers, t.StartDateTime, " +
+                                             "c.Id AS c_Id, c.Number AS c_Number, c.Indoor AS c_Indoor, c.Double AS c_Double, " +
+                                             "u.Id AS u_Id, u.UserName AS u_UserName " +
                                              "FROM Tournament AS t " +
                                              "LEFT JOIN CourtTournament AS ct ON t.Id = ct.TournamentsId " +
                                              "LEFT JOIN Court AS c ON ct.CourtsId = c.Id " +
-                                             "WHERE t.Id = @Id", conn);
+                                             "LEFT JOIN TournamentUser AS tu ON t.Id = tu.TournamentsId " +
+                                             "LEFT JOIN AspnetUsers AS u ON tu.UsersId = u.Id " +
+                                             "WHERE t.Id = @Id;", conn);
             cmd.Parameters.AddWithValue("@Id", id);
 
             using var reader = cmd.ExecuteReader();
             bool firstIteration = true;
+
             while (reader.Read())
             {
                 if (firstIteration)
@@ -91,8 +97,18 @@ public class TournamentRepository : Database, ITournamentRepository
                         Double = reader.GetBoolean("c_double"),
                         Indoor = reader.GetBoolean("c_indoor"),
                     };
-                    tournamentDto.Courts.Add(courtDto);
+                    tournamentDto.AddCourt(courtDto);
                 }
+                if (!reader.IsDBNull(reader.GetOrdinal("u_id")))
+                {
+                    UserDto userDto = new UserDto
+                    {
+                        Id = reader.GetString("u_id"),
+                        UserName = reader.GetString("u_username"),
+                    };
+                    tournamentDto.AddUser(userDto);
+                }
+
                 firstIteration = false;
             }
 
@@ -190,11 +206,11 @@ public class TournamentRepository : Database, ITournamentRepository
             cmd.Parameters.AddWithValue("@maxMembers", tournamentDto.MaxMembers);
             cmd.Parameters.AddWithValue("@startDateTime", tournamentDto.StartDateTime);
             bool tournamentSuccess = cmd.ExecuteNonQuery() > 0;
-            
+
             using var cmdDeletePivot = new MySqlCommand("DELETE FROM CourtTournament WHERE TournamentsId = @id;", conn);
             cmdDeletePivot.Parameters.AddWithValue("@id", id);
             cmdDeletePivot.ExecuteNonQuery();
-            
+
             bool pivotSuccess = true;
             if (tournamentDto.CourtIds != null)
             {
@@ -204,14 +220,14 @@ public class TournamentRepository : Database, ITournamentRepository
                     cmdPivot.Parameters.Clear();
                     cmdPivot.Parameters.AddWithValue("@courtsid", courtId);
                     cmdPivot.Parameters.AddWithValue("@tournamentsid", id);
-            
+
                     if (cmdPivot.ExecuteNonQuery() <= 0)
                     {
                         pivotSuccess = false;
                     }
                 }
             }
-            
+
             tcs.SetResult(tournamentSuccess && pivotSuccess);
 
             return tcs.Task;
@@ -241,7 +257,7 @@ public class TournamentRepository : Database, ITournamentRepository
 
             using var cmd = new MySqlCommand("DELETE FROM `Tournament` WHERE `Id` = @id", conn);
             cmd.Parameters.AddWithValue("@id", id);
-            
+
             using var cmdDeletePivot = new MySqlCommand("DELETE FROM CourtTournament WHERE TournamentsId = @id;", conn);
             cmdDeletePivot.Parameters.AddWithValue("@id", id);
             cmdDeletePivot.ExecuteNonQuery();

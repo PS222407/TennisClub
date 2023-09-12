@@ -60,7 +60,7 @@ public class TournamentController : Controller
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
 
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
         TournamentViewModel tournamentViewModel = new TournamentViewModel
@@ -73,18 +73,15 @@ public class TournamentController : Controller
             StartDateTime = tournamentDto.StartDateTime,
         };
         List<CourtViewModel> courtViewModels = new List<CourtViewModel>();
-        if (tournamentDto.Courts != null)
+        foreach (CourtDto courtDto in tournamentDto.Courts)
         {
-            foreach (CourtDto courtDto in tournamentDto.Courts)
+            courtViewModels.Add(new CourtViewModel
             {
-                courtViewModels.Add(new CourtViewModel
-                {
-                    Id = courtDto.Id,
-                    Number = courtDto.Number,
-                    Indoor = courtDto.Indoor,
-                    Double = courtDto.Double,
-                });
-            }
+                Id = courtDto.Id,
+                Number = courtDto.Number,
+                Indoor = courtDto.Indoor,
+                Double = courtDto.Double,
+            });
         }
 
         tournamentViewModel.Courts = courtViewModels;
