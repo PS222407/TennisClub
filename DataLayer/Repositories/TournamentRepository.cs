@@ -194,6 +194,7 @@ public class TournamentRepository : Database, ITournamentRepository
             using var cmdDeletePivot = new MySqlCommand("DELETE FROM CourtTournament WHERE TournamentsId = @id;", conn);
             cmdDeletePivot.Parameters.AddWithValue("@id", id);
             int rowsAffectedDelete = cmdDeletePivot.ExecuteNonQuery();
+            // TODO: can be 0 if already hasn't related items
             bool deletePivotSuccess = rowsAffectedDelete > 0;
             
             bool pivotSuccess = true;
@@ -242,6 +243,12 @@ public class TournamentRepository : Database, ITournamentRepository
 
             using var cmd = new MySqlCommand("DELETE FROM `Tournament` WHERE `Id` = @id", conn);
             cmd.Parameters.AddWithValue("@id", id);
+            
+            // TODO: not tested yet
+            using var cmdDeletePivot = new MySqlCommand("DELETE FROM CourtTournament WHERE TournamentsId = @id;", conn);
+            cmdDeletePivot.Parameters.AddWithValue("@id", id);
+            int rowsAffectedDelete = cmdDeletePivot.ExecuteNonQuery();
+            bool deletePivotSuccess = rowsAffectedDelete > 0;
 
             int rowsAffected = cmd.ExecuteNonQuery();
             tcs.SetResult(rowsAffected > 0);
