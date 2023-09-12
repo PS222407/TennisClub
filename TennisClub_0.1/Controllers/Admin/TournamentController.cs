@@ -72,6 +72,22 @@ public class TournamentController : Controller
             MaxMembers = tournamentDto.MaxMembers,
             StartDateTime = tournamentDto.StartDateTime,
         };
+        List<CourtViewModel> courtViewModels = new List<CourtViewModel>();
+        if (tournamentDto.Courts != null)
+        {
+            foreach (CourtDto courtDto in tournamentDto.Courts)
+            {
+                courtViewModels.Add(new CourtViewModel
+                {
+                    Id = courtDto.Id,
+                    Number = courtDto.Number,
+                    Indoor = courtDto.Indoor,
+                    Double = courtDto.Double,
+                });
+            }
+        }
+
+        tournamentViewModel.Courts = courtViewModels;
 
         return View(tournamentViewModel);
     }
@@ -134,7 +150,7 @@ public class TournamentController : Controller
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
 
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
         List<CourtDto>? courtDtos = _courtService.GetAll();
@@ -175,13 +191,14 @@ public class TournamentController : Controller
             Price = tournamentRequest.Price,
             MaxMembers = tournamentRequest.MaxMembers,
             StartDateTime = tournamentRequest.StartDateTime,
+            CourtIds = tournamentRequest.SelectedCourtIds,
         };
         if (!_tournamentService.Edit(id, tournamentDto))
         {
             TempData["Message"] = "Fout tijdens het opslaan van de data.";
             TempData["MessageType"] = "danger";
 
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
         TempData["Message"] = "Item succesvol gewijzigd";

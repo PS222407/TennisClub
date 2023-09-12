@@ -14,5 +14,20 @@ public class TournamentDto
 
     public DateTime StartDateTime { get; set; }
 
-    public List<int>? CourtIds { get; set; }
+    public List<CourtDto>? Courts { get; set; }
+
+    private List<int>? _courtIds;
+    
+    public List<int>? CourtIds
+    {
+        get
+        {
+            if (_courtIds == null && Courts != null)
+            {
+                return Courts.Select(court => court.Id).ToList();
+            }
+            return _courtIds;
+        }
+        set => _courtIds = value;
+    }
 }

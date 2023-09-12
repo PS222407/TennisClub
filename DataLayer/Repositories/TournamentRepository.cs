@@ -50,31 +50,55 @@ public class TournamentRepository : Database, ITournamentRepository
 
     public Task<TournamentDto?> FindById(int id)
     {
+        TournamentDto tournamentDto = new TournamentDto
+        {
+            Courts = new List<CourtDto>()
+        };
         TaskCompletionSource<TournamentDto?> tcs = new TaskCompletionSource<TournamentDto?>();
 
         try
         {
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
-
-            using var cmd = new MySqlCommand("SELECT `Id`,`Name`,`Description`,`Price`,`MaxMembers`,`StartDateTime`FROM `Tournament` WHERE `Id` = @Id", conn);
+            
+            using var cmd = new MySqlCommand("SELECT t.Id, t.Name, t.Description, t.Price, t.MaxMembers, t.StartDateTime, c.Id AS c_Id, c.Number AS c_Number, c.Indoor AS c_Indoor, c.Double AS c_Double " +
+                                             "FROM Tournament AS t " +
+                                             "LEFT JOIN CourtTournament AS ct ON t.Id = ct.TournamentsId " +
+                                             "LEFT JOIN Court AS c ON ct.CourtsId = c.Id " +
+                                             "WHERE t.Id = @Id", conn);
             cmd.Parameters.AddWithValue("@Id", id);
 
             using var reader = cmd.ExecuteReader();
+            bool firstIteration = true;
             while (reader.Read())
             {
-                TournamentDto tournamentDto = new TournamentDto
+                if (firstIteration)
                 {
-                    Id = reader.GetInt32("id"),
-                    Name = reader.GetString("name"),
-                    Description = reader.GetString("description"),
-                    Price = reader.GetInt32("price"),
-                    MaxMembers = reader.GetInt32("maxmembers"),
-                    StartDateTime = reader.GetDateTime("startdatetime"),
-                    CourtIds = // TODO haal ids op van gekoppelde ids,
-                };
-                tcs.SetResult(tournamentDto);
+                    tournamentDto.Id = reader.GetInt32("id");
+                    tournamentDto.Name = reader.GetString("name");
+                    tournamentDto.Description = reader.GetString("description");
+                    tournamentDto.Price = reader.GetInt32("price");
+                    tournamentDto.MaxMembers = reader.GetInt32("maxmembers");
+                    tournamentDto.StartDateTime = reader.GetDateTime("startdatetime");
+                }
 
+                if (!reader.IsDBNull(reader.GetOrdinal("c_id")))
+                {
+                    CourtDto courtDto = new CourtDto
+                    {
+                        Id = reader.GetInt32("c_id"),
+                        Number = reader.GetInt32("c_number"),
+                        Double = reader.GetBoolean("c_double"),
+                        Indoor = reader.GetBoolean("c_indoor"),
+                    };
+                    tournamentDto.Courts.Add(courtDto);
+                }
+                firstIteration = false;
+            }
+
+            if (!firstIteration)
+            {
+                tcs.SetResult(tournamentDto);
                 return tcs.Task;
             }
 
@@ -158,17 +182,38 @@ public class TournamentRepository : Database, ITournamentRepository
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
 
-            using var cmd = new MySqlCommand(
-                "UPDATE `Tournament` SET `Name` = @name, `Description` = @description,`Price` = @price,`MaxMembers` = @maxMembers,`StartDateTime` = @startDateTime WHERE `Id` = @id;", conn);
+            using var cmd = new MySqlCommand("UPDATE `Tournament` SET `Name` = @name, `Description` = @description,`Price` = @price,`MaxMembers` = @maxMembers,`StartDateTime` = @startDateTime WHERE `Id` = @id;", conn);
             cmd.Parameters.AddWithValue("@id", id);
             cmd.Parameters.AddWithValue("@name", tournamentDto.Name);
             cmd.Parameters.AddWithValue("@description", tournamentDto.Description);
             cmd.Parameters.AddWithValue("@price", tournamentDto.Price);
             cmd.Parameters.AddWithValue("@maxMembers", tournamentDto.MaxMembers);
             cmd.Parameters.AddWithValue("@startDateTime", tournamentDto.StartDateTime);
-
-            int rowsAffected = cmd.ExecuteNonQuery();
-            tcs.SetResult(rowsAffected > 0);
+            bool tournamentSuccess = cmd.ExecuteNonQuery() > 0;
+            
+            using var cmdDeletePivot = new MySqlCommand("DELETE FROM CourtTournament WHERE TournamentsId = @id;", conn);
+            cmdDeletePivot.Parameters.AddWithValue("@id", id);
+            int rowsAffectedDelete = cmdDeletePivot.ExecuteNonQuery();
+            bool deletePivotSuccess = rowsAffectedDelete > 0;
+            
+            bool pivotSuccess = true;
+            if (tournamentDto.CourtIds != null)
+            {
+                using var cmdPivot = new MySqlCommand("INSERT INTO `CourtTournament` (`CourtsId`, `TournamentsId`) VALUES (@courtsid, @tournamentsid);", conn);
+                foreach (int courtId in tournamentDto.CourtIds)
+                {
+                    cmdPivot.Parameters.Clear();
+                    cmdPivot.Parameters.AddWithValue("@courtsid", courtId);
+                    cmdPivot.Parameters.AddWithValue("@tournamentsid", id);
+            
+                    if (cmdPivot.ExecuteNonQuery() <= 0)
+                    {
+                        pivotSuccess = false;
+                    }
+                }
+            }
+            
+            tcs.SetResult(tournamentSuccess && deletePivotSuccess && pivotSuccess);
 
             return tcs.Task;
         }

@@ -41,5 +41,23 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.StartDateTime)
         </dd>
+        <dt class="col-sm-2">
+            CourtNumbers:
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Courts != null && Model.Courts.Any())
+            {
+                <ul>
+                    @foreach (CourtViewModel court in Model.Courts)
+                    {
+                        <li>@court.Number</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No courts selected</p>
+            }
+        </dd>
     </dl>
 </div>

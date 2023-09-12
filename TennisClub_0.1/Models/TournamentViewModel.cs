@@ -15,6 +15,8 @@ public class TournamentViewModel
     public int MaxMembers { get; set; }
 
     public DateTime StartDateTime { get; set; }
+
+    public List<CourtViewModel>? Courts { get; set; }
     
     public List<int>? SelectedCourtIds { get; set; }
     

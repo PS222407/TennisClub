@@ -64,6 +64,22 @@ public class TournamentController : Controller
             MaxMembers = tournamentDto.MaxMembers,
             StartDateTime = tournamentDto.StartDateTime,
         };
+        List<CourtViewModel> courtViewModels = new List<CourtViewModel>();
+        if (tournamentDto.Courts != null)
+        {
+            foreach (CourtDto courtDto in tournamentDto.Courts)
+            {
+                courtViewModels.Add(new CourtViewModel
+                {
+                    Id = courtDto.Id,
+                    Number = courtDto.Number,
+                    Indoor = courtDto.Indoor,
+                    Double = courtDto.Double,
+                });
+            }
+        }
+
+        tournamentViewModel.Courts = courtViewModels;
 
         return View(tournamentViewModel);
     }
