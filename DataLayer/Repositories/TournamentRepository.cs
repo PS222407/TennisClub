@@ -14,20 +14,53 @@ public class TournamentRepository : Database, ITournamentRepository
         {
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
-
-            using var cmd = new MySqlCommand("SELECT `Id`,`Name`,`Description`,`Price`,`MaxMembers`,`StartDateTime` FROM `Tournament`", conn);
+            
+            using var cmd = new MySqlCommand("SELECT t.Id, t.Name, t.Description, t.Price, t.MaxMembers, t.StartDateTime, " +
+                                             "c.Id AS c_Id, c.Number AS c_Number, c.Indoor AS c_Indoor, c.Double AS c_Double, " +
+                                             "u.Id AS u_Id, u.UserName AS u_UserName " +
+                                             "FROM Tournament AS t " +
+                                             "LEFT JOIN CourtTournament AS ct ON t.Id = ct.TournamentsId " +
+                                             "LEFT JOIN Court AS c ON ct.CourtsId = c.Id " +
+                                             "LEFT JOIN TournamentUser AS tu ON t.Id = tu.TournamentsId " +
+                                             "LEFT JOIN AspnetUsers AS u ON tu.UsersId = u.Id;", conn);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                tournamentDtos.Add(new TournamentDto
+                int tournamentId = reader.GetInt32("id");
+                if (!tournamentDtos.Any(t => t.Id == tournamentId))
                 {
-                    Id = reader.GetInt32("id"),
-                    Name = reader.GetString("name"),
-                    Description = reader.GetString("description"),
-                    Price = reader.GetInt32("price"),
-                    MaxMembers = reader.GetInt32("maxmembers"),
-                    StartDateTime = reader.GetDateTime("startdatetime"),
-                });
+                    tournamentDtos.Add(new TournamentDto
+                    {
+                        Id = reader.GetInt32("id"),
+                        Name = reader.GetString("name"),
+                        Description = reader.GetString("description"),
+                        Price = reader.GetInt32("price"),
+                        MaxMembers = reader.GetInt32("maxmembers"),
+                        StartDateTime = reader.GetDateTime("startdatetime"),
+                    });
+                }
+
+                TournamentDto tournamentDto = tournamentDtos.Find(t => t.Id == tournamentId)!;
+                
+                if (!reader.IsDBNull(reader.GetOrdinal("c_id")))
+                {
+                    tournamentDto.AddCourt(new CourtDto
+                    {
+                        Id = reader.GetInt32("c_id"),
+                        Number = reader.GetInt32("c_number"),
+                        Double = reader.GetBoolean("c_double"),
+                        Indoor = reader.GetBoolean("c_indoor"),
+                    });
+                }
+
+                if (!reader.IsDBNull(reader.GetOrdinal("u_id")))
+                {
+                    tournamentDto.AddUser(new UserDto
+                    {
+                        Id = reader.GetString("u_id"),
+                        UserName = reader.GetString("u_username"),
+                    });
+                }
             }
 
             tcs.SetResult(tournamentDtos);
@@ -99,6 +132,7 @@ public class TournamentRepository : Database, ITournamentRepository
                     };
                     tournamentDto.AddCourt(courtDto);
                 }
+
                 if (!reader.IsDBNull(reader.GetOrdinal("u_id")))
                 {
                     UserDto userDto = new UserDto
@@ -145,7 +179,9 @@ public class TournamentRepository : Database, ITournamentRepository
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
 
-            using var cmd = new MySqlCommand("INSERT INTO `Tournament` (`Name`, `Description`, `Price`, `MaxMembers`, `StartDateTime`) VALUES (@name, @description, @price, @maxMembers, @startDateTime); SELECT LAST_INSERT_ID();", conn);
+            using var cmd = new MySqlCommand(
+                "INSERT INTO `Tournament` (`Name`, `Description`, `Price`, `MaxMembers`, `StartDateTime`) VALUES (@name, @description, @price, @maxMembers, @startDateTime); SELECT LAST_INSERT_ID();",
+                conn);
             cmd.Parameters.AddWithValue("@name", tournamentDto.Name);
             cmd.Parameters.AddWithValue("@description", tournamentDto.Description);
             cmd.Parameters.AddWithValue("@price", tournamentDto.Price);
@@ -198,7 +234,8 @@ public class TournamentRepository : Database, ITournamentRepository
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
 
-            using var cmd = new MySqlCommand("UPDATE `Tournament` SET `Name` = @name, `Description` = @description,`Price` = @price,`MaxMembers` = @maxMembers,`StartDateTime` = @startDateTime WHERE `Id` = @id;", conn);
+            using var cmd = new MySqlCommand(
+                "UPDATE `Tournament` SET `Name` = @name, `Description` = @description,`Price` = @price,`MaxMembers` = @maxMembers,`StartDateTime` = @startDateTime WHERE `Id` = @id;", conn);
             cmd.Parameters.AddWithValue("@id", id);
             cmd.Parameters.AddWithValue("@name", tournamentDto.Name);
             cmd.Parameters.AddWithValue("@description", tournamentDto.Description);
@@ -277,6 +314,51 @@ public class TournamentRepository : Database, ITournamentRepository
         {
             Console.WriteLine("An error occurred: " + ex.Message);
             tcs.SetResult(false);
+            return tcs.Task;
+        }
+    }
+
+    public Task<StatusMessage> AddUser(int tournamentId, string userId)
+    { 
+        TaskCompletionSource<StatusMessage> tcs = new TaskCompletionSource<StatusMessage>();
+
+        try
+        {
+            using var conn = new MySqlConnection(ConnectionString);
+            conn.Open();
+
+            using var cmd = new MySqlCommand("INSERT INTO `TournamentUser` (`UsersId`, `TournamentsId`) VALUES (@userId, @tournamentId);", conn);
+            cmd.Parameters.AddWithValue("@userId", userId);
+            cmd.Parameters.AddWithValue("@tournamentId", tournamentId);
+            bool success = cmd.ExecuteNonQuery() > 0;
+
+            tcs.SetResult(new StatusMessage
+            {
+                Success = true,
+                Reason = "Successfully stored in database",
+            });
+
+            return tcs.Task;
+        }
+        catch (MySqlException ex)
+        {
+            Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
+            string reason = ex.ErrorCode == MySqlErrorCode.DuplicateKeyEntry ? "U bent al ingeschreven voor dit toernooi" : "Failed to store in database";
+            tcs.SetResult(new StatusMessage
+            {
+                Success = false,
+                Reason = reason,
+            });
+            return tcs.Task;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
+            tcs.SetResult(new StatusMessage
+            {
+                Success = false,
+                Reason = "Failed to store in database",
+            });
             return tcs.Task;
         }
     }

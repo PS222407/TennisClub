@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Interfaces;
+using DataLayer;
 using DataLayer.Dtos;
 using DataLayer.Repositories;
 
@@ -8,9 +9,9 @@ public class TournamentService : ITournamentService
 {
     private readonly ITournamentRepository _tournamentRepository;
 
-    public TournamentService()
+    public TournamentService(ITournamentRepository tournamentRepository)
     {
-        _tournamentRepository = new TournamentRepository();
+        _tournamentRepository = tournamentRepository;
     }
 
     public List<TournamentDto>? GetAll()
@@ -36,5 +37,10 @@ public class TournamentService : ITournamentService
     public bool Delete(int id)
     {
         return Task.Run(async () => await _tournamentRepository.Delete(id)).GetAwaiter().GetResult();
+    }
+
+    public StatusMessage AddUser(int tournamentId, string userId)
+    {
+        return Task.Run(async () => await _tournamentRepository.AddUser(tournamentId, userId)).GetAwaiter().GetResult();
     }
 }

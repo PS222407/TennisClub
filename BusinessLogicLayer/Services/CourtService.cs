@@ -8,9 +8,9 @@ public class CourtService : ICourtService
 {
     private readonly ICourtRepository _courtRepository;
     
-    public CourtService()
+    public CourtService(ICourtRepository courtRepository)
     {
-        _courtRepository = new CourtRepository();
+        _courtRepository = courtRepository;
     }
     
     public List<CourtDto>? GetAll()

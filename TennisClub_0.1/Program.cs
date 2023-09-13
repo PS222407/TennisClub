@@ -1,13 +1,18 @@
 using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Services;
+using DataLayer.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TennisClub_0._1.Data;
+using TennisClub_0._1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<IViewModelTransformerService, ViewModelTransformerService>();
 builder.Services.AddScoped<ICourtService, CourtService>();
 builder.Services.AddScoped<ITournamentService, TournamentService>();
+builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
+builder.Services.AddScoped<ICourtRepository, CourtRepository>();
 
 // Add services to the container.
 /*var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");

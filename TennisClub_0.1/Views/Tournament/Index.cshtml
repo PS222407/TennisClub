@@ -14,7 +14,11 @@
         </div>
         <div class="col-md-3 border-start">
             <div class="d-flex align-items-center justify-content-center h-100">
-                <a class="btn btn-primary" asp-area="" asp-controller="Tournament" asp-action="Details" asp-route-id="@item.Id">Klik hier om te bekijken</a>
+                <div>
+                    <a class="btn btn-primary" asp-area="" asp-controller="Tournament" asp-action="Details" asp-route-id="@item.Id">Klik hier om te bekijken</a>
+                    <div>Bezetting: (@item.Participants?.Count / @item.MaxMembers)</div>
+                    <div>Aantal banen: @item.Courts?.Count</div>
+                </div>
             </div>
         </div>
     </div>

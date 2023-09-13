@@ -13,4 +13,6 @@ public interface ITournamentRepository
     public Task<bool> Edit(int id, TournamentDto tournamentDto);
 
     public Task<bool> Delete(int id);
+    
+    public Task<StatusMessage> AddUser(int tournamentId, string userId);
 }

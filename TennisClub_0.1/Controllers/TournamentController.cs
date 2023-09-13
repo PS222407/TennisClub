@@ -1,17 +1,27 @@
+using System.Security.Claims;
 using BusinessLogicLayer.Interfaces;
+using DataLayer;
 using DataLayer.Dtos;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TennisClub_0._1.Models;
+using TennisClub_0._1.Services;
 
 namespace TennisClub_0._1.Controllers;
 
 public class TournamentController : Controller
 {
+    // private readonly UserManager<User> _userManager;
+    
     private readonly ITournamentService _tournamentService;
     
-    public TournamentController(ITournamentService tournamentService)
+    private readonly IViewModelTransformerService _viewModelTransformer;
+    
+    public TournamentController(ITournamentService tournamentService, IViewModelTransformerService viewModelTransformer)
     {
         _tournamentService = tournamentService;
+        _viewModelTransformer = viewModelTransformer;
     }
 
     // GET
@@ -26,24 +36,10 @@ public class TournamentController : Controller
             return View(new List<TournamentViewModel>());
         }
 
-        List<TournamentViewModel> tournamentViewModels = new List<TournamentViewModel>();
-        foreach (TournamentDto tournamentDto in tournamentDtos)
-        {
-            tournamentViewModels.Add(new TournamentViewModel
-            {
-                Id = tournamentDto.Id,
-                Name = tournamentDto.Name,
-                Description = tournamentDto.Description,
-                Price = tournamentDto.Price,
-                MaxMembers = tournamentDto.MaxMembers,
-                StartDateTime = tournamentDto.StartDateTime,
-            });
-        }
-
-        return View(tournamentViewModels);
+        return View(_viewModelTransformer.TransformTournaments(tournamentDtos));
     }
     
-    // GET: Tournaments/Details/5
+    // GET: Tournament/Details/5
     public ActionResult Details(int id)
     {
         TournamentDto? tournamentDto = _tournamentService.FindById(id);
@@ -55,32 +51,26 @@ public class TournamentController : Controller
             return View();
         }
 
-        TournamentViewModel tournamentViewModel = new TournamentViewModel
+        return View(_viewModelTransformer.TransformTournament(tournamentDto));
+    }
+
+    [HttpGet("Tournament/Join/{id:int}")]
+    [Authorize]
+    public ActionResult Join(int id)
+    {
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        StatusMessage statusMessage = _tournamentService.AddUser(id, userId);
+        if (!statusMessage.Success)
         {
-            Id = tournamentDto.Id,
-            Name = tournamentDto.Name,
-            Description = tournamentDto.Description,
-            Price = tournamentDto.Price,
-            MaxMembers = tournamentDto.MaxMembers,
-            StartDateTime = tournamentDto.StartDateTime,
-        };
-        List<CourtViewModel> courtViewModels = new List<CourtViewModel>();
-        if (tournamentDto.Courts != null)
-        {
-            foreach (CourtDto courtDto in tournamentDto.Courts)
-            {
-                courtViewModels.Add(new CourtViewModel
-                {
-                    Id = courtDto.Id,
-                    Number = courtDto.Number,
-                    Indoor = courtDto.Indoor,
-                    Double = courtDto.Double,
-                });
-            }
+            TempData["Message"] = statusMessage.Reason;
+            TempData["MessageType"] = "danger";
+
+            return RedirectToAction(nameof(Details), new { id = id });
         }
 
-        tournamentViewModel.Courts = courtViewModels;
+        TempData["Message"] = "Succesvol ingeschreven!";
+        TempData["MessageType"] = "success";
 
-        return View(tournamentViewModel);
+        return RedirectToAction(nameof(Details), new { id = id });
     }
 }
