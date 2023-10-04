@@ -4,11 +4,9 @@ using DataLayer.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TennisClub_0._1.Data;
-using TennisClub_0._1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IViewModelTransformerService, ViewModelTransformerService>();
 builder.Services.AddScoped<ICourtService, CourtService>();
 builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();

@@ -1,3 +1,4 @@
+@using Microsoft.IdentityModel.Tokens
 @model TennisClub_0._1.Models.TournamentViewModel
 
 @{
@@ -10,7 +11,14 @@
     <hr/>
 
     <div class="container row mb-5">
-        <img class="col-md-4" src="~/images/tournament.jpg" alt="">
+        @if (!Model.ImageUrl.IsNullOrEmpty())
+        {
+            <img class="col-md-4" src="@Model.ImageUrl" alt="Tournament image" />
+        }
+        else
+        {
+            <img class="col-md-4" src="~/images/tournament.jpg" alt="Tournament Image" />
+        }
         <div class="col-md-8">
             <div> @Html.DisplayFor(model => model.Name) </div>
             <div> @Html.DisplayFor(model => model.Description)</div>

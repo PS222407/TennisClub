@@ -14,8 +14,8 @@ public class TournamentRepository : Database, ITournamentRepository
         {
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
-            
-            using var cmd = new MySqlCommand("SELECT t.Id, t.Name, t.Description, t.Price, t.MaxMembers, t.StartDateTime, " +
+
+            using var cmd = new MySqlCommand("SELECT t.Id, t.Name, t.Description, t.Price, t.MaxMembers, t.StartDateTime, t.ImageUrl, " +
                                              "c.Id AS c_Id, c.Number AS c_Number, c.Indoor AS c_Indoor, c.Double AS c_Double, " +
                                              "u.Id AS u_Id, u.UserName AS u_UserName " +
                                              "FROM Tournament AS t " +
@@ -37,11 +37,12 @@ public class TournamentRepository : Database, ITournamentRepository
                         Price = reader.GetInt32("price"),
                         MaxMembers = reader.GetInt32("maxmembers"),
                         StartDateTime = reader.GetDateTime("startdatetime"),
+                        ImageUrl = reader.GetString("imageurl"),
                     });
                 }
 
                 TournamentDto tournamentDto = tournamentDtos.Find(t => t.Id == tournamentId)!;
-                
+
                 if (!reader.IsDBNull(reader.GetOrdinal("c_id")))
                 {
                     tournamentDto.AddCourt(new CourtDto
@@ -95,7 +96,7 @@ public class TournamentRepository : Database, ITournamentRepository
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
 
-            using var cmd = new MySqlCommand("SELECT t.Id, t.Name, t.Description, t.Price, t.MaxMembers, t.StartDateTime, " +
+            using var cmd = new MySqlCommand("SELECT t.Id, t.Name, t.Description, t.Price, t.MaxMembers, t.StartDateTime, t.ImageUrl, " +
                                              "c.Id AS c_Id, c.Number AS c_Number, c.Indoor AS c_Indoor, c.Double AS c_Double, " +
                                              "u.Id AS u_Id, u.UserName AS u_UserName " +
                                              "FROM Tournament AS t " +
@@ -119,6 +120,7 @@ public class TournamentRepository : Database, ITournamentRepository
                     tournamentDto.Price = reader.GetInt32("price");
                     tournamentDto.MaxMembers = reader.GetInt32("maxmembers");
                     tournamentDto.StartDateTime = reader.GetDateTime("startdatetime");
+                    tournamentDto.ImageUrl = reader.GetString("imageurl");
                 }
 
                 if (!reader.IsDBNull(reader.GetOrdinal("c_id")))
@@ -180,13 +182,14 @@ public class TournamentRepository : Database, ITournamentRepository
             conn.Open();
 
             using var cmd = new MySqlCommand(
-                "INSERT INTO `Tournament` (`Name`, `Description`, `Price`, `MaxMembers`, `StartDateTime`) VALUES (@name, @description, @price, @maxMembers, @startDateTime); SELECT LAST_INSERT_ID();",
+                "INSERT INTO `Tournament` (`Name`, `Description`, `Price`, `MaxMembers`, `StartDateTime`, `ImageUrl`) VALUES (@name, @description, @price, @maxMembers, @startDateTime, @imageUrl); SELECT LAST_INSERT_ID();",
                 conn);
             cmd.Parameters.AddWithValue("@name", tournamentDto.Name);
             cmd.Parameters.AddWithValue("@description", tournamentDto.Description);
             cmd.Parameters.AddWithValue("@price", tournamentDto.Price);
             cmd.Parameters.AddWithValue("@maxMembers", tournamentDto.MaxMembers);
             cmd.Parameters.AddWithValue("@startDateTime", tournamentDto.StartDateTime);
+            cmd.Parameters.AddWithValue("@imageUrl", tournamentDto.ImageUrl);
             object? lastInsertedId = cmd.ExecuteScalar();
             bool tournamentSuccess = lastInsertedId != null;
 
@@ -235,13 +238,15 @@ public class TournamentRepository : Database, ITournamentRepository
             conn.Open();
 
             using var cmd = new MySqlCommand(
-                "UPDATE `Tournament` SET `Name` = @name, `Description` = @description,`Price` = @price,`MaxMembers` = @maxMembers,`StartDateTime` = @startDateTime WHERE `Id` = @id;", conn);
+                "UPDATE `Tournament` SET `Name` = @name, `Description` = @description,`Price` = @price,`MaxMembers` = @maxMembers,`StartDateTime` = @startDateTime, `ImageUrl` = @imageUrl WHERE `Id` = @id;",
+                conn);
             cmd.Parameters.AddWithValue("@id", id);
             cmd.Parameters.AddWithValue("@name", tournamentDto.Name);
             cmd.Parameters.AddWithValue("@description", tournamentDto.Description);
             cmd.Parameters.AddWithValue("@price", tournamentDto.Price);
             cmd.Parameters.AddWithValue("@maxMembers", tournamentDto.MaxMembers);
             cmd.Parameters.AddWithValue("@startDateTime", tournamentDto.StartDateTime);
+            cmd.Parameters.AddWithValue("@imageUrl", tournamentDto.ImageUrl);
             bool tournamentSuccess = cmd.ExecuteNonQuery() > 0;
 
             using var cmdDeletePivot = new MySqlCommand("DELETE FROM CourtTournament WHERE TournamentsId = @id;", conn);
@@ -285,7 +290,7 @@ public class TournamentRepository : Database, ITournamentRepository
 
     public Task<bool> Delete(int id)
     {
-        TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+        TaskCompletionSource<bool> tcs = new();
 
         try
         {
@@ -319,7 +324,7 @@ public class TournamentRepository : Database, ITournamentRepository
     }
 
     public Task<StatusMessage> AddUser(int tournamentId, string userId)
-    { 
+    {
         TaskCompletionSource<StatusMessage> tcs = new TaskCompletionSource<StatusMessage>();
 
         try

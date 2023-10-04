@@ -7,8 +7,8 @@ public class CourtRepository : Database, ICourtRepository
 {
     public Task<List<CourtDto>?> GetAll()
     {
-        List<CourtDto> courtDtos = new List<CourtDto>();
-        TaskCompletionSource<List<CourtDto>?> tcs = new TaskCompletionSource<List<CourtDto>?>();
+        List<CourtDto> courtDtos = new();
+        TaskCompletionSource<List<CourtDto>?> tcs = new();
 
         try
         {

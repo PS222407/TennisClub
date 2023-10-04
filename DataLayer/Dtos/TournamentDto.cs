@@ -14,7 +14,6 @@ public class TournamentDto
 
     public DateTime StartDateTime { get; set; }
 
-    //TODO: IReadOnlyList
     public List<UserDto> Users { get; set; } = new();
 
     public List<CourtDto> Courts { get; set; } = new();
@@ -33,6 +32,8 @@ public class TournamentDto
         }
         set => _courtIds = value;
     }
+
+    public string? ImageUrl { get; set; }
 
     public void AddUser(UserDto userDto)
     {

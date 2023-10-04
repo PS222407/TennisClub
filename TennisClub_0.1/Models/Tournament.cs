@@ -17,4 +17,6 @@ public class Tournament
     public required List<Court> Courts { get; set; }
     
     public List<User>? Users { get; set; }
+
+    public string ImageUrl { get; set; }
 }

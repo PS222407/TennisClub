@@ -268,6 +268,10 @@ namespace TennisClub_0._1.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<int>("MaxMembers")
                         .HasColumnType("int");
 

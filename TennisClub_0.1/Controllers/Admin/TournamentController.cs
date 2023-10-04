@@ -17,13 +17,17 @@ public class TournamentController : Controller
 
     private readonly ICourtService _courtService;
 
-    private readonly IViewModelTransformerService _viewModelTransformer;
+    private readonly TournamentTransformer _tournamentTransformer = new();
+    
+    private readonly FileService _fileService = new();
+    
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public TournamentController(ITournamentService tournamentService, ICourtService courtService, IViewModelTransformerService viewModelTransformer)
+    public TournamentController(ITournamentService tournamentService, ICourtService courtService, IWebHostEnvironment webHostEnvironment)
     {
         _tournamentService = tournamentService;
         _courtService = courtService;
-        _viewModelTransformer = viewModelTransformer;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     // GET: Tournaments
@@ -38,7 +42,7 @@ public class TournamentController : Controller
             return View(new List<TournamentViewModel>());
         }
 
-        return View(_viewModelTransformer.TransformTournaments(tournamentDtos));
+        return View(_tournamentTransformer.DtosToViews(tournamentDtos));
     }
 
     // GET: Tournaments/Details/5
@@ -53,7 +57,7 @@ public class TournamentController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        return View(_viewModelTransformer.TransformTournament(tournamentDto));
+        return View(_tournamentTransformer.DtoToView(tournamentDto));
     }
 
     // GET: Tournaments/Create
@@ -61,7 +65,7 @@ public class TournamentController : Controller
     {
         List<CourtDto>? courtDtos = _courtService.GetAll();
 
-        TournamentViewModel tournamentViewModel = new TournamentViewModel
+        TournamentRequest tournamentRequest = new()
         {
             CourtOptions = courtDtos?.Select(c => new SelectListItem
             {
@@ -70,39 +74,33 @@ public class TournamentController : Controller
             }).ToList(),
         };
 
-        return View(tournamentViewModel);
+        return View(tournamentRequest);
     }
 
     // POST: Tournaments/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Create(TournamentRequest tournamentRequest)
+    public async Task<ActionResult> Create(TournamentRequest tournamentRequest)
     {
         if (!ModelState.IsValid)
         {
-            return View();
+            return View(tournamentRequest);
         }
-
-        TournamentDto tournamentDto = new TournamentDto
-        {
-            Name = tournamentRequest.Name,
-            Description = tournamentRequest.Description,
-            Price = tournamentRequest.Price,
-            MaxMembers = tournamentRequest.MaxMembers,
-            StartDateTime = tournamentRequest.StartDateTime,
-            CourtIds = tournamentRequest.SelectedCourtIds,
-        };
+        
+        TournamentDto tournamentDto = _tournamentTransformer.RequestToDto(tournamentRequest);
+        tournamentDto.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
+            
         if (!_tournamentService.Create(tournamentDto))
         {
             TempData["Message"] = "Fout tijdens het aanmaken.";
             TempData["MessageType"] = "danger";
-            return View();
+            return View(tournamentRequest);
         }
 
         TempData["Message"] = "Item succesvol aangemaakt";
         TempData["MessageType"] = "success";
 
-        return RedirectToAction(nameof(Index));
+         return RedirectToAction(nameof(Index));
     }
 
     // GET: Tournaments/Edit/5
@@ -119,7 +117,7 @@ public class TournamentController : Controller
 
         List<CourtDto>? courtDtos = _courtService.GetAll();
 
-        TournamentViewModel tournamentViewModel = new TournamentViewModel()
+        TournamentRequest tournamentRequest = new()
         {
             Id = tournamentDto.Id,
             Name = tournamentDto.Name,
@@ -135,28 +133,22 @@ public class TournamentController : Controller
             SelectedCourtIds = tournamentDto.CourtIds,
         };
 
-        return View(tournamentViewModel);
+        return View(tournamentRequest);
     }
 
     // POST: Tournaments/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Edit(int id, TournamentRequest tournamentRequest)
+    public async Task<ActionResult> Edit(int id, TournamentRequest tournamentRequest)
     {
         if (!ModelState.IsValid)
         {
-            return View();
+            return View(tournamentRequest);
         }
 
-        TournamentDto tournamentDto = new TournamentDto
-        {
-            Name = tournamentRequest.Name,
-            Description = tournamentRequest.Description,
-            Price = tournamentRequest.Price,
-            MaxMembers = tournamentRequest.MaxMembers,
-            StartDateTime = tournamentRequest.StartDateTime,
-            CourtIds = tournamentRequest.SelectedCourtIds,
-        };
+        TournamentDto tournamentDto = _tournamentTransformer.RequestToDto(tournamentRequest);
+        tournamentDto.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
+        
         if (!_tournamentService.Edit(id, tournamentDto))
         {
             TempData["Message"] = "Fout tijdens het opslaan van de data.";
@@ -183,17 +175,7 @@ public class TournamentController : Controller
             return View();
         }
 
-        TournamentViewModel tournamentViewModel = new TournamentViewModel
-        {
-            Id = tournamentDto.Id,
-            Name = tournamentDto.Name,
-            Description = tournamentDto.Description,
-            Price = tournamentDto.Price,
-            MaxMembers = tournamentDto.MaxMembers,
-            StartDateTime = tournamentDto.StartDateTime,
-        };
-
-        return View(tournamentViewModel);
+        return View(_tournamentTransformer.DtoToView(tournamentDto));
     }
 
     // POST: Tournaments/Delete/5

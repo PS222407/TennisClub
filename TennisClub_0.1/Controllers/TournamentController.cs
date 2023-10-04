@@ -3,7 +3,6 @@ using BusinessLogicLayer.Interfaces;
 using DataLayer;
 using DataLayer.Dtos;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TennisClub_0._1.Models;
 using TennisClub_0._1.Services;
@@ -12,16 +11,12 @@ namespace TennisClub_0._1.Controllers;
 
 public class TournamentController : Controller
 {
-    // private readonly UserManager<User> _userManager;
-    
     private readonly ITournamentService _tournamentService;
+    private readonly TournamentTransformer _tournamentTransformer = new();
     
-    private readonly IViewModelTransformerService _viewModelTransformer;
-    
-    public TournamentController(ITournamentService tournamentService, IViewModelTransformerService viewModelTransformer)
+    public TournamentController(ITournamentService tournamentService)
     {
         _tournamentService = tournamentService;
-        _viewModelTransformer = viewModelTransformer;
     }
 
     // GET
@@ -36,7 +31,7 @@ public class TournamentController : Controller
             return View(new List<TournamentViewModel>());
         }
 
-        return View(_viewModelTransformer.TransformTournaments(tournamentDtos));
+        return View(_tournamentTransformer.DtosToViews(tournamentDtos));
     }
     
     // GET: Tournament/Details/5
@@ -51,7 +46,7 @@ public class TournamentController : Controller
             return View();
         }
 
-        return View(_viewModelTransformer.TransformTournament(tournamentDto));
+        return View(_tournamentTransformer.DtoToView(tournamentDto));
     }
 
     [HttpGet("Tournament/Join/{id:int}")]
@@ -65,7 +60,7 @@ public class TournamentController : Controller
             TempData["Message"] = statusMessage.Reason;
             TempData["MessageType"] = "danger";
 
-            return RedirectToAction(nameof(Details), new { id = id });
+            return RedirectToAction(nameof(Details), new {  id });
         }
 
         TempData["Message"] = "Succesvol ingeschreven!";

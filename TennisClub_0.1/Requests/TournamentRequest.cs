@@ -18,7 +18,9 @@ public class TournamentRequest
 
     public DateTime StartDateTime { get; set; }
     
-    public List<int>? SelectedCourtIds { get; set; } // This property will hold the selected court IDs
+    public List<int>? SelectedCourtIds { get; set; }
     
-    public List<SelectListItem>? CourtOptions { get; set; } // This property will populate the dropdown list
+    public List<SelectListItem>? CourtOptions { get; set; }
+    
+    public IFormFile Image { get; set; }
 }
