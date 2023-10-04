@@ -72,8 +72,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BusinessLogicLayer\BusinessLogicLayer.csproj" />
-    <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
+    <ProjectReference Include="..\TennisClub.20_BusinessLogic\TennisClub.20_BusinessLogic.csproj" />
+    <ProjectReference Include="..\TennisClub.30_DataAccess\TennisClub.30_DataAccess.csproj" />
   </ItemGroup>
 
   <ItemGroup>

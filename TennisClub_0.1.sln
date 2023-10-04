@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TennisClub_0.1", "TennisClub_0.1\TennisClub_0.1.csproj", "{2B715A8B-666A-4B5A-953A-C21BF4F58665}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TennisClub.10_WebApp", "TennisClub.10_WebApp\TennisClub.10_WebApp.csproj", "{2B715A8B-666A-4B5A-953A-C21BF4F58665}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "DataLayer\DataLayer.csproj", "{82CE0235-0E33-4812-A044-BCA66DD210FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TennisClub.30_DataAccess", "TennisClub.30_DataAccess\TennisClub.30_DataAccess.csproj", "{82CE0235-0E33-4812-A044-BCA66DD210FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogicLayer", "BusinessLogicLayer\BusinessLogicLayer.csproj", "{667BBCFB-4EFE-459E-9F1A-67A78A26885E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TennisClub.20_BusinessLogic", "TennisClub.20_BusinessLogic\TennisClub.20_BusinessLogic.csproj", "{667BBCFB-4EFE-459E-9F1A-67A78A26885E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
