@@ -31,9 +31,9 @@ public class TournamentController : Controller
     }
 
     // GET: Tournaments
-    public ActionResult Index()
+    public async Task<ActionResult> Index()
     {
-        List<TournamentDto>? tournamentDtos = _tournamentService.GetAll();
+        List<TournamentDto>? tournamentDtos = await _tournamentService.GetAll();
         if (tournamentDtos == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -46,9 +46,9 @@ public class TournamentController : Controller
     }
 
     // GET: Tournaments/Details/5
-    public ActionResult Details(int id)
+    public async Task<ActionResult> Details(int id)
     {
-        TournamentDto? tournamentDto = _tournamentService.FindById(id);
+        TournamentDto? tournamentDto = await _tournamentService.FindById(id);
         if (tournamentDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -61,9 +61,9 @@ public class TournamentController : Controller
     }
 
     // GET: Tournaments/Create
-    public ActionResult Create()
+    public async Task<ActionResult> Create()
     {
-        List<CourtDto>? courtDtos = _courtService.GetAll();
+        List<CourtDto>? courtDtos = await _courtService.GetAll();
 
         TournamentRequest tournamentRequest = new()
         {
@@ -90,7 +90,7 @@ public class TournamentController : Controller
         TournamentDto tournamentDto = _tournamentTransformer.RequestToDto(tournamentRequest);
         tournamentDto.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
             
-        if (!_tournamentService.Create(tournamentDto))
+        if (!await _tournamentService.Create(tournamentDto))
         {
             TempData["Message"] = "Fout tijdens het aanmaken.";
             TempData["MessageType"] = "danger";
@@ -104,9 +104,9 @@ public class TournamentController : Controller
     }
 
     // GET: Tournaments/Edit/5
-    public ActionResult Edit(int id)
+    public async Task<ActionResult> Edit(int id)
     {
-        TournamentDto? tournamentDto = _tournamentService.FindById(id);
+        TournamentDto? tournamentDto = await _tournamentService.FindById(id);
         if (tournamentDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -115,7 +115,7 @@ public class TournamentController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        List<CourtDto>? courtDtos = _courtService.GetAll();
+        List<CourtDto>? courtDtos = await _courtService.GetAll();
 
         TournamentRequest tournamentRequest = new()
         {
@@ -149,7 +149,7 @@ public class TournamentController : Controller
         TournamentDto tournamentDto = _tournamentTransformer.RequestToDto(tournamentRequest);
         tournamentDto.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
         
-        if (!_tournamentService.Edit(id, tournamentDto))
+        if (!await _tournamentService.Edit(id, tournamentDto))
         {
             TempData["Message"] = "Fout tijdens het opslaan van de data.";
             TempData["MessageType"] = "danger";
@@ -164,9 +164,9 @@ public class TournamentController : Controller
     }
 
     // GET: Tournaments/Delete/5
-    public ActionResult Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
-        TournamentDto? tournamentDto = _tournamentService.FindById(id);
+        TournamentDto? tournamentDto = await _tournamentService.FindById(id);
         if (tournamentDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van de data.";
@@ -181,9 +181,9 @@ public class TournamentController : Controller
     // POST: Tournaments/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Destroy(int id)
+    public async Task<ActionResult> Destroy(int id)
     {
-        if (!_tournamentService.Delete(id))
+        if (!await _tournamentService.Delete(id))
         {
             TempData["Message"] = "Fout tijdens het verwijderen van de data.";
             TempData["MessageType"] = "danger";

@@ -4,13 +4,13 @@ namespace BusinessLogicLayer.Interfaces;
 
 public interface ICourtService
 {
-    public List<CourtDto>? GetAll();
+    public Task<List<CourtDto>?> GetAll();
 
-    public CourtDto? FindById(int id);
+    public Task<CourtDto?> FindById(int id);
 
-    public bool Create(CourtDto courtDto);
+    public Task<bool> Create(CourtDto courtDto);
 
-    public bool Edit(int id, CourtDto courtDto);
+    public Task<bool> Edit(int id, CourtDto courtDto);
 
-    public bool Delete(int id);
+    public Task<bool> Delete(int id);
 }

@@ -13,16 +13,16 @@ public class TournamentController : Controller
 {
     private readonly ITournamentService _tournamentService;
     private readonly TournamentTransformer _tournamentTransformer = new();
-    
+
     public TournamentController(ITournamentService tournamentService)
     {
         _tournamentService = tournamentService;
     }
 
     // GET
-    public IActionResult Index()
+    public async Task<ActionResult> Index()
     {
-        List<TournamentDto>? tournamentDtos = _tournamentService.GetAll();
+        List<TournamentDto>? tournamentDtos = await _tournamentService.GetAll();
         if (tournamentDtos == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -33,11 +33,11 @@ public class TournamentController : Controller
 
         return View(_tournamentTransformer.DtosToViews(tournamentDtos));
     }
-    
+
     // GET: Tournament/Details/5
-    public ActionResult Details(int id)
+    public async Task<ActionResult> Details(int id)
     {
-        TournamentDto? tournamentDto = _tournamentService.FindById(id);
+        TournamentDto? tournamentDto = await _tournamentService.FindById(id);
         if (tournamentDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -51,16 +51,16 @@ public class TournamentController : Controller
 
     [HttpGet("Tournament/Join/{id:int}")]
     [Authorize]
-    public ActionResult Join(int id)
+    public async Task<ActionResult> Join(int id)
     {
         string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        StatusMessage statusMessage = _tournamentService.AddUser(id, userId);
+        StatusMessage statusMessage = await _tournamentService.AddUser(id, userId);
         if (!statusMessage.Success)
         {
             TempData["Message"] = statusMessage.Reason;
             TempData["MessageType"] = "danger";
 
-            return RedirectToAction(nameof(Details), new {  id });
+            return RedirectToAction(nameof(Details), new { id });
         }
 
         TempData["Message"] = "Succesvol ingeschreven!";

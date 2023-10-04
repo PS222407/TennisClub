@@ -13,29 +13,29 @@ public class CourtService : ICourtService
         _courtRepository = courtRepository;
     }
     
-    public List<CourtDto>? GetAll()
+    public async Task<List<CourtDto>?> GetAll()
     {
-        return Task.Run(async () => await _courtRepository.GetAll()).GetAwaiter().GetResult();
+        return await _courtRepository.GetAll();
     }
 
-    public CourtDto? FindById(int id)
+    public async Task<CourtDto?> FindById(int id)
     {
-        return Task.Run(async () => await _courtRepository.FindById(id)).GetAwaiter().GetResult();
+        return await _courtRepository.FindById(id);
     }
 
-    public bool Create(CourtDto courtDto)
+    public async Task<bool> Create(CourtDto courtDto)
     {
-        return Task.Run(async () => await _courtRepository.Create(courtDto)).GetAwaiter().GetResult();
+        return await _courtRepository.Create(courtDto);
     }
 
-    public bool Edit(int id, CourtDto courtDto)
+    public async Task<bool> Edit(int id, CourtDto courtDto)
     {
-        return Task.Run(async () => await _courtRepository.Edit(id, courtDto)).GetAwaiter().GetResult();
+        return await _courtRepository.Edit(id, courtDto);
     }
 
-    public bool Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        return Task.Run(async () => await _courtRepository.Delete(id)).GetAwaiter().GetResult();
+        return await _courtRepository.Delete(id);
     }
 }
 

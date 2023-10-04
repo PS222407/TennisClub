@@ -5,15 +5,15 @@ namespace BusinessLogicLayer.Interfaces;
 
 public interface ITournamentService
 {
-    public List<TournamentDto>? GetAll();
+    public Task<List<TournamentDto>?> GetAll();
 
-    public TournamentDto? FindById(int id);
+    public Task<TournamentDto?> FindById(int id);
 
-    public bool Create(TournamentDto tournamentDto);
+    public Task<bool> Create(TournamentDto tournamentDto);
 
-    public bool Edit(int id, TournamentDto tournamentDto);
+    public Task<bool> Edit(int id, TournamentDto tournamentDto);
 
-    public bool Delete(int id);
+    public Task<bool> Delete(int id);
 
-    public StatusMessage AddUser(int tournamentId, string userId);
+    public Task<StatusMessage> AddUser(int tournamentId, string userId);
 }

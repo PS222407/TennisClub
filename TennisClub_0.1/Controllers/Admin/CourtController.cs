@@ -19,9 +19,9 @@ public class CourtController : Controller
     }
 
     // GET: Courts
-    public ActionResult Index()
+    public async Task<ActionResult> Index()
     {
-        List<CourtDto>? courtDtos = _courtService.GetAll();
+        List<CourtDto>? courtDtos = await _courtService.GetAll();
         if (courtDtos == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -46,9 +46,9 @@ public class CourtController : Controller
     }
 
     // GET: Courts/Details/5
-    public ActionResult Details(int id)
+    public async Task<ActionResult> Details(int id)
     {
-        CourtDto? courtDto = _courtService.FindById(id);
+        CourtDto? courtDto = await _courtService.FindById(id);
         if (courtDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -77,20 +77,20 @@ public class CourtController : Controller
     // POST: Courts/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Create(CourtRequest courtRequest)
+    public async Task<ActionResult> Create(CourtRequest courtRequest)
     {
         if (!ModelState.IsValid)
         {
             return View();
         }
 
-        CourtDto courtDto = new CourtDto()
+        CourtDto courtDto = new()
         {
             Double = courtRequest.Double,
             Indoor = courtRequest.Indoor,
             Number = courtRequest.Number,
         };
-        if (!_courtService.Create(courtDto))
+        if (!await _courtService.Create(courtDto))
         {
             TempData["Message"] = "Fout tijdens het aanmaken.";
             TempData["MessageType"] = "danger";
@@ -104,9 +104,9 @@ public class CourtController : Controller
     }
 
     // GET: Courts/Edit/5
-    public ActionResult Edit(int id)
+    public async Task<ActionResult> Edit(int id)
     {
-        CourtDto? courtDto = _courtService.FindById(id);
+        CourtDto? courtDto = await _courtService.FindById(id);
         if (courtDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -115,7 +115,7 @@ public class CourtController : Controller
             return View();
         }
 
-        CourtViewModel courtViewModel = new CourtViewModel()
+        CourtViewModel courtViewModel = new()
         {
             Id = courtDto.Id,
             Double = courtDto.Double,
@@ -129,20 +129,20 @@ public class CourtController : Controller
     // POST: Courts/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Edit(int id, CourtRequest courtRequest)
+    public async Task<ActionResult> Edit(int id, CourtRequest courtRequest)
     {
         if (!ModelState.IsValid)
         {
             return View();
         }
 
-        CourtDto courtDto = new CourtDto
+        CourtDto courtDto = new()
         {
             Double = courtRequest.Double,
             Indoor = courtRequest.Indoor,
             Number = courtRequest.Number,
         };
-        if (!_courtService.Edit(id, courtDto))
+        if (!await _courtService.Edit(id, courtDto))
         {
             TempData["Message"] = "Fout tijdens het opslaan van de data.";
             TempData["MessageType"] = "danger";
@@ -157,9 +157,9 @@ public class CourtController : Controller
     }
 
     // GET: Courts/Delete/5
-    public ActionResult Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
-        CourtDto? courtDto = _courtService.FindById(id);
+        CourtDto? courtDto = await _courtService.FindById(id);
         if (courtDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van de data.";
@@ -168,7 +168,7 @@ public class CourtController : Controller
             return View();
         }
 
-        CourtViewModel courtViewModel = new CourtViewModel
+        CourtViewModel courtViewModel = new()
         {
             Id = courtDto.Id,
             Double = courtDto.Double,
@@ -182,9 +182,9 @@ public class CourtController : Controller
     // POST: Courts/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Destroy(int id)
+    public async Task<ActionResult> Destroy(int id)
     {
-        if (!_courtService.Delete(id))
+        if (!await _courtService.Delete(id))
         {
             TempData["Message"] = "Fout tijdens het verwijderen van de data.";
             TempData["MessageType"] = "danger";
