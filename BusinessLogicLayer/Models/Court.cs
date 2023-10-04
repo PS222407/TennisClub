@@ -1,6 +1,6 @@
-﻿namespace DataLayer.Dtos
+﻿namespace BusinessLogicLayer.Models
 {
-    public class CourtDto
+    public class Court
     {
         public int Id { get; set; }
 

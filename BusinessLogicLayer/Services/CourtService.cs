@@ -1,6 +1,6 @@
-﻿using BusinessLogicLayer.Interfaces;
-using DataLayer.Dtos;
-using DataLayer.Repositories;
+﻿using BusinessLogicLayer.Interfaces.Repositories;
+using BusinessLogicLayer.Interfaces.Services;
+using BusinessLogicLayer.Models;
 
 namespace BusinessLogicLayer.Services;
 
@@ -13,29 +13,29 @@ public class CourtService : ICourtService
         _courtRepository = courtRepository;
     }
     
-    public async Task<List<CourtDto>?> GetAll()
+    public List<Court>? GetAll()
     {
-        return await _courtRepository.GetAll();
+        return _courtRepository.GetAll();
     }
 
-    public async Task<CourtDto?> FindById(int id)
+    public Court? FindById(int id)
     {
-        return await _courtRepository.FindById(id);
+        return _courtRepository.FindById(id);
     }
 
-    public async Task<bool> Create(CourtDto courtDto)
+    public bool Create(Court court)
     {
-        return await _courtRepository.Create(courtDto);
+        return _courtRepository.Create(court);
     }
 
-    public async Task<bool> Edit(int id, CourtDto courtDto)
+    public bool Edit(int id, Court court)
     {
-        return await _courtRepository.Edit(id, courtDto);
+        return _courtRepository.Edit(id, court);
     }
 
-    public async Task<bool> Delete(int id)
+    public bool Delete(int id)
     {
-        return await _courtRepository.Delete(id);
+        return _courtRepository.Delete(id);
     }
 }
 

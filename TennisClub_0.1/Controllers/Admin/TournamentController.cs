@@ -1,11 +1,12 @@
-﻿using BusinessLogicLayer.Interfaces;
-using DataLayer.Dtos;
+﻿using BusinessLogicLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TennisClub_0._1.Models;
 using TennisClub_0._1.Requests;
 using TennisClub_0._1.Services;
+using Court = BusinessLogicLayer.Models.Court;
+using Tournament = BusinessLogicLayer.Models.Tournament;
 
 namespace TennisClub_0._1.Controllers.Admin;
 
@@ -31,9 +32,9 @@ public class TournamentController : Controller
     }
 
     // GET: Tournaments
-    public async Task<ActionResult> Index()
+    public ActionResult Index()
     {
-        List<TournamentDto>? tournamentDtos = await _tournamentService.GetAll();
+        List<Tournament>? tournamentDtos = _tournamentService.GetAll();
         if (tournamentDtos == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -42,13 +43,13 @@ public class TournamentController : Controller
             return View(new List<TournamentViewModel>());
         }
 
-        return View(_tournamentTransformer.DtosToViews(tournamentDtos));
+        return View(_tournamentTransformer.ModelsToViews(tournamentDtos));
     }
 
     // GET: Tournaments/Details/5
-    public async Task<ActionResult> Details(int id)
+    public ActionResult Details(int id)
     {
-        TournamentDto? tournamentDto = await _tournamentService.FindById(id);
+        Tournament? tournamentDto = _tournamentService.FindById(id);
         if (tournamentDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -57,13 +58,13 @@ public class TournamentController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        return View(_tournamentTransformer.DtoToView(tournamentDto));
+        return View(_tournamentTransformer.ModelToView(tournamentDto));
     }
 
     // GET: Tournaments/Create
-    public async Task<ActionResult> Create()
+    public ActionResult Create()
     {
-        List<CourtDto>? courtDtos = await _courtService.GetAll();
+        List<Court>? courtDtos = _courtService.GetAll();
 
         TournamentRequest tournamentRequest = new()
         {
@@ -87,10 +88,10 @@ public class TournamentController : Controller
             return View(tournamentRequest);
         }
         
-        TournamentDto tournamentDto = _tournamentTransformer.RequestToDto(tournamentRequest);
-        tournamentDto.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
+        Tournament tournament = _tournamentTransformer.RequestToDto(tournamentRequest);
+        tournament.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
             
-        if (!await _tournamentService.Create(tournamentDto))
+        if (!_tournamentService.Create(tournament))
         {
             TempData["Message"] = "Fout tijdens het aanmaken.";
             TempData["MessageType"] = "danger";
@@ -104,9 +105,9 @@ public class TournamentController : Controller
     }
 
     // GET: Tournaments/Edit/5
-    public async Task<ActionResult> Edit(int id)
+    public ActionResult Edit(int id)
     {
-        TournamentDto? tournamentDto = await _tournamentService.FindById(id);
+        Tournament? tournamentDto = _tournamentService.FindById(id);
         if (tournamentDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -115,7 +116,7 @@ public class TournamentController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        List<CourtDto>? courtDtos = await _courtService.GetAll();
+        List<Court>? courtDtos = _courtService.GetAll();
 
         TournamentRequest tournamentRequest = new()
         {
@@ -146,10 +147,10 @@ public class TournamentController : Controller
             return View(tournamentRequest);
         }
 
-        TournamentDto tournamentDto = _tournamentTransformer.RequestToDto(tournamentRequest);
-        tournamentDto.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
+        Tournament tournament = _tournamentTransformer.RequestToDto(tournamentRequest);
+        tournament.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
         
-        if (!await _tournamentService.Edit(id, tournamentDto))
+        if (!_tournamentService.Edit(id, tournament))
         {
             TempData["Message"] = "Fout tijdens het opslaan van de data.";
             TempData["MessageType"] = "danger";
@@ -164,9 +165,9 @@ public class TournamentController : Controller
     }
 
     // GET: Tournaments/Delete/5
-    public async Task<ActionResult> Delete(int id)
+    public ActionResult Delete(int id)
     {
-        TournamentDto? tournamentDto = await _tournamentService.FindById(id);
+        Tournament? tournamentDto = _tournamentService.FindById(id);
         if (tournamentDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van de data.";
@@ -175,15 +176,15 @@ public class TournamentController : Controller
             return View();
         }
 
-        return View(_tournamentTransformer.DtoToView(tournamentDto));
+        return View(_tournamentTransformer.ModelToView(tournamentDto));
     }
 
     // POST: Tournaments/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Destroy(int id)
+    public ActionResult Destroy(int id)
     {
-        if (!await _tournamentService.Delete(id))
+        if (!_tournamentService.Delete(id))
         {
             TempData["Message"] = "Fout tijdens het verwijderen van de data.";
             TempData["MessageType"] = "danger";

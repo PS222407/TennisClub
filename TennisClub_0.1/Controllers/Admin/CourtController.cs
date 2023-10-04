@@ -1,9 +1,9 @@
-using BusinessLogicLayer.Interfaces;
-using DataLayer.Dtos;
+using BusinessLogicLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TennisClub_0._1.Models;
 using TennisClub_0._1.Requests;
+using Court = BusinessLogicLayer.Models.Court;
 
 namespace TennisClub_0._1.Controllers.Admin;
 
@@ -19,9 +19,9 @@ public class CourtController : Controller
     }
 
     // GET: Courts
-    public async Task<ActionResult> Index()
+    public ActionResult Index()
     {
-        List<CourtDto>? courtDtos = await _courtService.GetAll();
+        List<Court>? courtDtos = _courtService.GetAll();
         if (courtDtos == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -31,14 +31,14 @@ public class CourtController : Controller
         }
 
         List<CourtViewModel> courtViewModels = new List<CourtViewModel>();
-        foreach (CourtDto courtDto in courtDtos)
+        foreach (Court court in courtDtos)
         {
             courtViewModels.Add(new CourtViewModel
             {
-                Id = courtDto.Id,
-                Double = courtDto.Double,
-                Indoor = courtDto.Indoor,
-                Number = courtDto.Number,
+                Id = court.Id,
+                Double = court.Double,
+                Indoor = court.Indoor,
+                Number = court.Number,
             });
         }
 
@@ -46,10 +46,10 @@ public class CourtController : Controller
     }
 
     // GET: Courts/Details/5
-    public async Task<ActionResult> Details(int id)
+    public ActionResult Details(int id)
     {
-        CourtDto? courtDto = await _courtService.FindById(id);
-        if (courtDto == null)
+        Court? court = _courtService.FindById(id);
+        if (court == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
@@ -59,10 +59,10 @@ public class CourtController : Controller
 
         CourtViewModel courtViewModel = new CourtViewModel
         {
-            Id = courtDto.Id,
-            Double = courtDto.Double,
-            Indoor = courtDto.Indoor,
-            Number = courtDto.Number,
+            Id = court.Id,
+            Double = court.Double,
+            Indoor = court.Indoor,
+            Number = court.Number,
         };
 
         return View(courtViewModel);
@@ -77,20 +77,20 @@ public class CourtController : Controller
     // POST: Courts/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Create(CourtRequest courtRequest)
+    public ActionResult Create(CourtRequest courtRequest)
     {
         if (!ModelState.IsValid)
         {
             return View();
         }
 
-        CourtDto courtDto = new()
+        Court court = new()
         {
             Double = courtRequest.Double,
             Indoor = courtRequest.Indoor,
             Number = courtRequest.Number,
         };
-        if (!await _courtService.Create(courtDto))
+        if (!_courtService.Create(court))
         {
             TempData["Message"] = "Fout tijdens het aanmaken.";
             TempData["MessageType"] = "danger";
@@ -104,10 +104,10 @@ public class CourtController : Controller
     }
 
     // GET: Courts/Edit/5
-    public async Task<ActionResult> Edit(int id)
+    public ActionResult Edit(int id)
     {
-        CourtDto? courtDto = await _courtService.FindById(id);
-        if (courtDto == null)
+        Court? court = _courtService.FindById(id);
+        if (court == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
@@ -117,10 +117,10 @@ public class CourtController : Controller
 
         CourtViewModel courtViewModel = new()
         {
-            Id = courtDto.Id,
-            Double = courtDto.Double,
-            Indoor = courtDto.Indoor,
-            Number = courtDto.Number,
+            Id = court.Id,
+            Double = court.Double,
+            Indoor = court.Indoor,
+            Number = court.Number,
         };
 
         return View(courtViewModel);
@@ -129,20 +129,20 @@ public class CourtController : Controller
     // POST: Courts/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Edit(int id, CourtRequest courtRequest)
+    public ActionResult Edit(int id, CourtRequest courtRequest)
     {
         if (!ModelState.IsValid)
         {
             return View();
         }
 
-        CourtDto courtDto = new()
+        Court court = new()
         {
             Double = courtRequest.Double,
             Indoor = courtRequest.Indoor,
             Number = courtRequest.Number,
         };
-        if (!await _courtService.Edit(id, courtDto))
+        if (!_courtService.Edit(id, court))
         {
             TempData["Message"] = "Fout tijdens het opslaan van de data.";
             TempData["MessageType"] = "danger";
@@ -157,10 +157,10 @@ public class CourtController : Controller
     }
 
     // GET: Courts/Delete/5
-    public async Task<ActionResult> Delete(int id)
+    public ActionResult Delete(int id)
     {
-        CourtDto? courtDto = await _courtService.FindById(id);
-        if (courtDto == null)
+        Court? court = _courtService.FindById(id);
+        if (court == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van de data.";
             TempData["MessageType"] = "danger";
@@ -170,10 +170,10 @@ public class CourtController : Controller
 
         CourtViewModel courtViewModel = new()
         {
-            Id = courtDto.Id,
-            Double = courtDto.Double,
-            Indoor = courtDto.Indoor,
-            Number = courtDto.Number,
+            Id = court.Id,
+            Double = court.Double,
+            Indoor = court.Indoor,
+            Number = court.Number,
         };
 
         return View(courtViewModel);
@@ -182,9 +182,9 @@ public class CourtController : Controller
     // POST: Courts/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Destroy(int id)
+    public ActionResult Destroy(int id)
     {
-        if (!await _courtService.Delete(id))
+        if (!_courtService.Delete(id))
         {
             TempData["Message"] = "Fout tijdens het verwijderen van de data.";
             TempData["MessageType"] = "danger";

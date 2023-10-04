@@ -1,11 +1,11 @@
 using System.Security.Claims;
-using BusinessLogicLayer.Interfaces;
-using DataLayer;
-using DataLayer.Dtos;
+using BusinessLogicLayer;
+using BusinessLogicLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TennisClub_0._1.Models;
 using TennisClub_0._1.Services;
+using Tournament = BusinessLogicLayer.Models.Tournament;
 
 namespace TennisClub_0._1.Controllers;
 
@@ -20,9 +20,9 @@ public class TournamentController : Controller
     }
 
     // GET
-    public async Task<ActionResult> Index()
+    public ActionResult Index()
     {
-        List<TournamentDto>? tournamentDtos = await _tournamentService.GetAll();
+        List<Tournament>? tournamentDtos = _tournamentService.GetAll();
         if (tournamentDtos == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -31,13 +31,13 @@ public class TournamentController : Controller
             return View(new List<TournamentViewModel>());
         }
 
-        return View(_tournamentTransformer.DtosToViews(tournamentDtos));
+        return View(_tournamentTransformer.ModelsToViews(tournamentDtos));
     }
 
     // GET: Tournament/Details/5
-    public async Task<ActionResult> Details(int id)
+    public ActionResult Details(int id)
     {
-        TournamentDto? tournamentDto = await _tournamentService.FindById(id);
+        Tournament? tournamentDto = _tournamentService.FindById(id);
         if (tournamentDto == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
@@ -46,15 +46,15 @@ public class TournamentController : Controller
             return View();
         }
 
-        return View(_tournamentTransformer.DtoToView(tournamentDto));
+        return View(_tournamentTransformer.ModelToView(tournamentDto));
     }
 
     [HttpGet("Tournament/Join/{id:int}")]
     [Authorize]
-    public async Task<ActionResult> Join(int id)
+    public ActionResult Join(int id)
     {
         string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        StatusMessage statusMessage = await _tournamentService.AddUser(id, userId);
+        StatusMessage statusMessage = _tournamentService.AddUser(id, userId);
         if (!statusMessage.Success)
         {
             TempData["Message"] = statusMessage.Reason;

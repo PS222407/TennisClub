@@ -1,7 +1,6 @@
-﻿using BusinessLogicLayer.Interfaces;
-using DataLayer;
-using DataLayer.Dtos;
-using DataLayer.Repositories;
+﻿using BusinessLogicLayer.Interfaces.Repositories;
+using BusinessLogicLayer.Interfaces.Services;
+using BusinessLogicLayer.Models;
 
 namespace BusinessLogicLayer.Services;
 
@@ -14,33 +13,33 @@ public class TournamentService : ITournamentService
         _tournamentRepository = tournamentRepository;
     }
 
-    public async Task<List<TournamentDto>?> GetAll()
+    public List<Tournament>? GetAll()
     {
-        return await _tournamentRepository.GetAll();
+        return _tournamentRepository.GetAll();
     }
 
-    public async Task<TournamentDto?> FindById(int id)
+    public Tournament? FindById(int id)
     {
-        return await _tournamentRepository.FindById(id);
+        return _tournamentRepository.FindById(id);
     }
 
-    public async Task<bool> Create(TournamentDto tournamentDto)
+    public bool Create(Tournament tournament)
     {
-        return await _tournamentRepository.Create(tournamentDto);
+        return _tournamentRepository.Create(tournament);
     }
 
-    public async Task<bool> Edit(int id, TournamentDto tournamentDto)
+    public bool Edit(int id, Tournament tournament)
     {
-        return await _tournamentRepository.Edit(id, tournamentDto);
+        return _tournamentRepository.Edit(id, tournament);
     }
 
-    public async Task<bool> Delete(int id)
+    public bool Delete(int id)
     {
-        return await _tournamentRepository.Delete(id);
+        return _tournamentRepository.Delete(id);
     }
 
-    public async Task<StatusMessage> AddUser(int tournamentId, string userId)
+    public StatusMessage AddUser(int tournamentId, string userId)
     {
-        return await _tournamentRepository.AddUser(tournamentId, userId);
+        return _tournamentRepository.AddUser(tournamentId, userId);
     }
 }

@@ -1,4 +1,5 @@
-using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Interfaces.Repositories;
+using BusinessLogicLayer.Interfaces.Services;
 using BusinessLogicLayer.Services;
 using DataLayer.Repositories;
 using Microsoft.AspNetCore.Identity;

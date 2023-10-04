@@ -1,50 +1,52 @@
-using DataLayer.Dtos;
 using TennisClub_0._1.Models;
 using TennisClub_0._1.Requests;
+using Court = BusinessLogicLayer.Models.Court;
+using Tournament = BusinessLogicLayer.Models.Tournament;
+using User = BusinessLogicLayer.Models.User;
 
 namespace TennisClub_0._1.Services;
 
 public class TournamentTransformer
 {
-    public List<TournamentViewModel> DtosToViews(List<TournamentDto> tournamentDtos)
+    public List<TournamentViewModel> ModelsToViews(List<Tournament> tournamentDtos)
     {
-        return tournamentDtos.Select(DtoToView).ToList();
+        return tournamentDtos.Select(ModelToView).ToList();
     }
 
-    public TournamentViewModel DtoToView(TournamentDto tournamentDto)
+    public TournamentViewModel ModelToView(Tournament tournament)
     {
         TournamentViewModel tournamentViewModel = new()
         {
-            Id = tournamentDto.Id,
-            Name = tournamentDto.Name,
-            Description = tournamentDto.Description,
-            Price = tournamentDto.Price,
-            MaxMembers = tournamentDto.MaxMembers,
-            StartDateTime = tournamentDto.StartDateTime,
-            ImageUrl = tournamentDto.ImageUrl,
+            Id = tournament.Id,
+            Name = tournament.Name,
+            Description = tournament.Description,
+            Price = tournament.Price,
+            MaxMembers = tournament.MaxMembers,
+            StartDateTime = tournament.StartDateTime,
+            ImageUrl = tournament.ImageUrl,
         };
 
         List<CourtViewModel> courtViewModels = new();
-        foreach (CourtDto courtDto in tournamentDto.Courts)
+        foreach (Court court in tournament.Courts)
         {
             courtViewModels.Add(new CourtViewModel
             {
-                Id = courtDto.Id,
-                Number = courtDto.Number,
-                Indoor = courtDto.Indoor,
-                Double = courtDto.Double,
+                Id = court.Id,
+                Number = court.Number,
+                Indoor = court.Indoor,
+                Double = court.Double,
             });
         }
 
         tournamentViewModel.Courts = courtViewModels;
 
         List<UserViewModel> userViewModels = new();
-        foreach (UserDto userDto in tournamentDto.Users)
+        foreach (User user in tournament.Users)
         {
             userViewModels.Add(new UserViewModel
             {
-                Id = userDto.Id,
-                UserName = userDto.UserName,
+                Id = user.Id,
+                UserName = user.UserName,
             });
         }
 
@@ -68,9 +70,9 @@ public class TournamentTransformer
         };
     }
 
-    public TournamentDto RequestToDto(TournamentRequest tournamentRequest)
+    public Tournament RequestToDto(TournamentRequest tournamentRequest)
     {
-        return new TournamentDto
+        return new Tournament
         {
             Name = tournamentRequest.Name,
             Description = tournamentRequest.Description,

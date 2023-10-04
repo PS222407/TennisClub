@@ -1,6 +1,6 @@
-﻿namespace DataLayer.Dtos;
+﻿namespace BusinessLogicLayer.Models;
 
-public class TournamentDto
+public class Tournament
 {
     public int Id { get; set; }
 
@@ -14,9 +14,9 @@ public class TournamentDto
 
     public DateTime StartDateTime { get; set; }
 
-    public List<UserDto> Users { get; set; } = new();
+    public List<User> Users { get; set; } = new();
 
-    public List<CourtDto> Courts { get; set; } = new();
+    public List<Court> Courts { get; set; } = new();
 
     private List<int>? _courtIds;
     
@@ -35,19 +35,19 @@ public class TournamentDto
 
     public string? ImageUrl { get; set; }
 
-    public void AddUser(UserDto userDto)
+    public void AddUser(User user)
     {
-        if (!Users.Any(user => user.Id == userDto.Id))
+        if (!Users.Any(u => u.Id == user.Id))
         {
-            Users.Add(userDto);
+            Users.Add(user);
         }
     }
 
-    public void AddCourt(CourtDto courtDto)
+    public void AddCourt(Court court)
     {
-        if (!Courts.Any(court => court.Id == courtDto.Id))
+        if (!Courts.Any(c => c.Id == court.Id))
         {
-            Courts.Add(courtDto);
+            Courts.Add(court);
         }
     }
 }

@@ -10,4 +10,8 @@
     <PackageReference Include="MySqlConnector" Version="2.3.0-beta.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BusinessLogicLayer\BusinessLogicLayer.csproj" />
+  </ItemGroup>
+
 </Project>

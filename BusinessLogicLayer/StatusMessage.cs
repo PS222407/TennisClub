@@ -1,4 +1,4 @@
-namespace DataLayer;
+namespace BusinessLogicLayer;
 
 public class StatusMessage
 {

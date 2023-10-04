@@ -1,14 +1,14 @@
-﻿using DataLayer.Dtos;
+﻿using BusinessLogicLayer.Interfaces.Repositories;
+using BusinessLogicLayer.Models;
 using MySqlConnector;
 
 namespace DataLayer.Repositories;
 
 public class CourtRepository : Database, ICourtRepository
 {
-    public Task<List<CourtDto>?> GetAll()
+    public List<Court>? GetAll()
     {
-        List<CourtDto> courtDtos = new();
-        TaskCompletionSource<List<CourtDto>?> tcs = new();
+        List<Court> courts = new();
 
         try
         {
@@ -19,7 +19,7 @@ public class CourtRepository : Database, ICourtRepository
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                courtDtos.Add(new CourtDto
+                courts.Add(new Court
                 {
                     Id = reader.GetInt32("id"),
                     Double = reader.GetBoolean("double"),
@@ -28,40 +28,34 @@ public class CourtRepository : Database, ICourtRepository
                 });
             }
 
-            tcs.SetResult(courtDtos);
-
-            return tcs.Task;
+            return courts;
         }
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-            tcs.SetResult(null);
-            return tcs.Task;
+            return null;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-            tcs.SetResult(null);
-            return tcs.Task;
+            return null;
         }
     }
 
-    public Task<CourtDto?> FindById(int id)
+    public Court? FindById(int id)
     {
-        TaskCompletionSource<CourtDto?> tcs = new TaskCompletionSource<CourtDto?>();
-
         try
         {
-            using var conn = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = new(ConnectionString);
             conn.Open();
 
-            using var cmd = new MySqlCommand("SELECT `Id`, `Double`, `Indoor`, `Number` FROM `Court` WHERE `Id` = @Id", conn);
+            using MySqlCommand cmd = new("SELECT `Id`, `Double`, `Indoor`, `Number` FROM `Court` WHERE `Id` = @Id", conn);
             cmd.Parameters.AddWithValue("@Id", id);
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                CourtDto courtDto = new CourtDto
+                Court courtDto = new Court
                 {
                     Id = reader.GetInt32("id"),
                     Double = reader.GetBoolean("double"),
@@ -69,66 +63,53 @@ public class CourtRepository : Database, ICourtRepository
                     Number = reader.GetInt32("number"),
                 };
 
-                tcs.SetResult(courtDto);
-
-                return tcs.Task;
+                return courtDto;
             }
 
-            tcs.SetResult(null);
-
-            return tcs.Task;
+            return null;
         }
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-            tcs.SetResult(null);
-            return tcs.Task;
+            return null;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-            tcs.SetResult(null);
-            return tcs.Task;
+            return null;
         }
     }
 
-    public Task<bool> Create(CourtDto courtDto)
+    public bool Create(Court court)
     {
-        TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-
         try
         {
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
 
             using var cmd = new MySqlCommand("INSERT INTO `Court` (`Id`, `Number`, `Indoor`, `Double`) VALUES (NULL, @number, @indoor, @double);", conn);
-            cmd.Parameters.AddWithValue("@number", courtDto.Number);
-            cmd.Parameters.AddWithValue("@indoor", courtDto.Indoor);
-            cmd.Parameters.AddWithValue("@double", courtDto.Double);
+            cmd.Parameters.AddWithValue("@number", court.Number);
+            cmd.Parameters.AddWithValue("@indoor", court.Indoor);
+            cmd.Parameters.AddWithValue("@double", court.Double);
 
             int rowsAffected = cmd.ExecuteNonQuery();
-            tcs.SetResult(rowsAffected > 0);
 
-            return tcs.Task;
+            return rowsAffected > 0;
         }
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-            tcs.SetResult(false);
-            return tcs.Task;
+            return false;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-            tcs.SetResult(false);
-            return tcs.Task;
+            return false;
         }
     }
 
-    public Task<bool> Edit(int id, CourtDto courtDto)
+    public bool Edit(int id, Court court)
     {
-        TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-
         try
         {
             using var conn = new MySqlConnection(ConnectionString);
@@ -136,33 +117,28 @@ public class CourtRepository : Database, ICourtRepository
 
             using var cmd = new MySqlCommand("UPDATE `Court` SET `Number` = @number, `Indoor` = @indoor,`Double` = @double WHERE `Id` = @id;", conn);
             cmd.Parameters.AddWithValue("@id", id);
-            cmd.Parameters.AddWithValue("@number", courtDto.Number);
-            cmd.Parameters.AddWithValue("@indoor", courtDto.Indoor);
-            cmd.Parameters.AddWithValue("@double", courtDto.Double);
+            cmd.Parameters.AddWithValue("@number", court.Number);
+            cmd.Parameters.AddWithValue("@indoor", court.Indoor);
+            cmd.Parameters.AddWithValue("@double", court.Double);
 
             int rowsAffected = cmd.ExecuteNonQuery();
-            tcs.SetResult(rowsAffected > 0);
 
-            return tcs.Task;
+            return rowsAffected > 0;
         }
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-            tcs.SetResult(false);
-            return tcs.Task;
+            return false;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-            tcs.SetResult(false);
-            return tcs.Task;
+            return false;
         }
     }
 
-    public Task<bool> Delete(int id)
+    public bool Delete(int id)
     {
-        TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-
         try
         {
             using var conn = new MySqlConnection(ConnectionString);
@@ -172,21 +148,18 @@ public class CourtRepository : Database, ICourtRepository
             cmd.Parameters.AddWithValue("@id", id);
 
             int rowsAffected = cmd.ExecuteNonQuery();
-            tcs.SetResult(rowsAffected > 0);
 
-            return tcs.Task;
+            return rowsAffected > 0;
         }
         catch (MySqlException ex)
         {
             Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
-            tcs.SetResult(false);
-            return tcs.Task;
+            return false;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
-            tcs.SetResult(false);
-            return tcs.Task;
+            return false;
         }
     }
 }

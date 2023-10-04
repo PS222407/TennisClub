@@ -1,6 +1,6 @@
-﻿namespace DataLayer.Dtos;
+﻿namespace BusinessLogicLayer.Models;
 
-public class UserDto
+public class User
 {
     public string Id { get; set; }
 
