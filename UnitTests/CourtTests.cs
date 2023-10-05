@@ -96,7 +96,7 @@ public class CourtTests
         {
             Id = 5,
             Double = false,
-            Indoor = true,
+            Indoor = false,
             Number = 4,
         };
         
