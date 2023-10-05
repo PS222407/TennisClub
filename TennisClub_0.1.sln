@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TennisClub.30_DataAccess", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TennisClub.20_BusinessLogic", "TennisClub.20_BusinessLogic\TennisClub.20_BusinessLogic.csproj", "{667BBCFB-4EFE-459E-9F1A-67A78A26885E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{671CD1F8-E0CB-4901-96F3-0040FC718E87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{667BBCFB-4EFE-459E-9F1A-67A78A26885E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{667BBCFB-4EFE-459E-9F1A-67A78A26885E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{667BBCFB-4EFE-459E-9F1A-67A78A26885E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{671CD1F8-E0CB-4901-96F3-0040FC718E87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{671CD1F8-E0CB-4901-96F3-0040FC718E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{671CD1F8-E0CB-4901-96F3-0040FC718E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{671CD1F8-E0CB-4901-96F3-0040FC718E87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
