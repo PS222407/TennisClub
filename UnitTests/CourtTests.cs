@@ -96,7 +96,7 @@ public class CourtTests
         {
             Id = 5,
             Double = false,
-            Indoor = false,
+            Indoor = true,
             Number = 4,
         };
         
@@ -108,5 +108,4 @@ public class CourtTests
         Assert.That(returnResult, Is.True);
         createdCourt.Should().BeEquivalentTo(courtToCompare);
     }
-    
 }
