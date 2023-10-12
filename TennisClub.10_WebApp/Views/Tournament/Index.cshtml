@@ -6,16 +6,16 @@
     Layout = "_Layout";
 }
 
-@foreach (var item in Model)
+@foreach (TournamentViewModel? item in Model)
 {
     <div class="container row mb-5">
         @if (!item.ImageUrl.IsNullOrEmpty())
         {
-            <img class="col-md-3" src="@item.ImageUrl" alt="Tournament Image" />
+            <img class="col-md-3" src="@item.ImageUrl" alt="Tournament Image"/>
         }
         else
         {
-            <img class="col-md-3" src="~/images/tournament.jpg" alt="Tournament Image" />
+            <img class="col-md-3" src="~/images/tournament.jpg" alt="Tournament Image"/>
         }
         <div class="col-md-6">
             <div> @Html.DisplayFor(modelItem => item.Name) </div>

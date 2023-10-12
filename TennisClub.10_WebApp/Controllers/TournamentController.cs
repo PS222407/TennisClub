@@ -12,6 +12,7 @@ namespace TennisClub_0._1.Controllers;
 public class TournamentController : Controller
 {
     private readonly ITournamentService _tournamentService;
+
     private readonly TournamentTransformer _tournamentTransformer = new();
 
     public TournamentController(ITournamentService tournamentService)

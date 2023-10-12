@@ -69,10 +69,10 @@ public class CourtServiceTests
                 Number = 4,
             },
         };
-        
+
         // Act
         List<Court>? courts = _courtService!.GetAll();
-        
+
         // Assert
         for (int i = 0; i < courts?.Count; i++)
         {
@@ -98,16 +98,16 @@ public class CourtServiceTests
             Indoor = false,
             Number = 4,
         };
-        
+
         // Act
         bool result = _courtService!.Create(courtToCreate);
         Court? createdCourt = _courtService!.FindById(5);
-        
+
         // Assert
         Assert.That(result, Is.True);
         createdCourt.Should().BeEquivalentTo(courtToCompare);
     }
-    
+
     [Test]
     public void Edit_ReturnsCourt()
     {
@@ -119,11 +119,11 @@ public class CourtServiceTests
             Indoor = false,
             Number = 4,
         };
-        
+
         // Act
         bool result = _courtService!.Edit(1, courtToEdit);
         Court? editedCourt = _courtService!.FindById(1);
-        
+
         // Assert
         Assert.That(result, Is.True);
         editedCourt.Should().BeEquivalentTo(courtToEdit);
@@ -135,7 +135,7 @@ public class CourtServiceTests
         // Arrange & Act
         bool result = _courtService!.Delete(1);
         Court? deletedCourt = _courtService!.FindById(1);
-        
+
         // Assert
         Assert.That(result && deletedCourt == null);
     }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TennisClub_0._1.Data;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ICourtService, CourtService>();
 builder.Services.AddScoped<ITournamentService, TournamentService>();
@@ -20,8 +20,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));*/
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 24));
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8, 0, 24));
 builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseMySql(connectionString, serverVersion));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -32,7 +32,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -54,22 +54,22 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapAreaControllerRoute(
-    name: "MyAreaAdmin",
-    areaName: "Admin",
-    pattern: "Admin/{controller=Home}/{action=Index}/{id?}");
+    "MyAreaAdmin",
+    "Admin",
+    "Admin/{controller=Home}/{action=Index}/{id?}");
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-using (var scope = app.Services.CreateScope())
+using (IServiceScope scope = app.Services.CreateScope())
 {
-    var roleManager =
+    RoleManager<IdentityRole> roleManager =
         scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    var roles = new[] { "Admin", };
+    string[] roles = { "Admin" };
 
-    foreach (var role in roles)
+    foreach (string role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
         {

@@ -8,7 +8,7 @@ public class TournamentViewModel
 
     public string Name { get; set; }
 
-    public string Description { get; set; }  
+    public string Description { get; set; }
 
     public int Price { get; set; }
 
@@ -17,12 +17,12 @@ public class TournamentViewModel
     public DateTime StartDateTime { get; set; }
 
     public List<UserViewModel>? Participants { get; set; }
-    
+
     public List<CourtViewModel>? Courts { get; set; }
-    
+
     public List<int>? SelectedCourtIds { get; set; }
-    
+
     public List<SelectListItem>? CourtOptions { get; set; }
-    
+
     public string? ImageUrl { get; set; }
 }

@@ -7,12 +7,12 @@ namespace BusinessLogicLayer.Services;
 public class CourtService : ICourtService
 {
     private readonly ICourtRepository _courtRepository;
-    
+
     public CourtService(ICourtRepository courtRepository)
     {
         _courtRepository = courtRepository;
     }
-    
+
     public List<Court>? GetAll()
     {
         return _courtRepository.GetAll();
@@ -38,4 +38,3 @@ public class CourtService : ICourtService
         return _courtRepository.Delete(id);
     }
 }
-

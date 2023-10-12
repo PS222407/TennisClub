@@ -9,7 +9,7 @@ public class Court
     public bool Indoor { get; set; }
 
     public bool Double { get; set; }
-    
+
     public bool IsValid()
     {
         return Number > 0;

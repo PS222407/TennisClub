@@ -81,7 +81,7 @@ public class TournamentRepository : Database, ITournamentRepository
 
     public Tournament? FindById(int id)
     {
-        Tournament tournament = new Tournament
+        Tournament tournament = new()
         {
             Courts = new List<Court>(),
             Users = new List<User>(),
@@ -103,7 +103,7 @@ public class TournamentRepository : Database, ITournamentRepository
                                          "WHERE t.Id = @Id;", conn);
             cmd.Parameters.AddWithValue("@Id", id);
 
-            using var reader = cmd.ExecuteReader();
+            using MySqlDataReader reader = cmd.ExecuteReader();
             bool firstIteration = true;
 
             while (reader.Read())
@@ -121,7 +121,7 @@ public class TournamentRepository : Database, ITournamentRepository
 
                 if (!reader.IsDBNull(reader.GetOrdinal("c_id")))
                 {
-                    Court courtDto = new Court
+                    Court courtDto = new()
                     {
                         Id = reader.GetInt32("c_id"),
                         Number = reader.GetInt32("c_number"),
@@ -133,7 +133,7 @@ public class TournamentRepository : Database, ITournamentRepository
 
                 if (!reader.IsDBNull(reader.GetOrdinal("u_id")))
                 {
-                    User userDto = new User
+                    User userDto = new()
                     {
                         Id = reader.GetString("u_id"),
                         UserName = reader.GetString("u_username"),
@@ -180,7 +180,7 @@ public class TournamentRepository : Database, ITournamentRepository
             bool pivotSuccess = true;
             if (tournament.CourtIds != null)
             {
-                using var cmdPivot = new MySqlCommand("INSERT INTO `CourtTournament` (`CourtsId`, `TournamentsId`) VALUES (@courtsid, @tournamentsid);", conn);
+                using MySqlCommand cmdPivot = new("INSERT INTO `CourtTournament` (`CourtsId`, `TournamentsId`) VALUES (@courtsid, @tournamentsid);", conn);
                 foreach (int courtId in tournament.CourtIds)
                 {
                     cmdPivot.Parameters.Clear();
@@ -212,7 +212,7 @@ public class TournamentRepository : Database, ITournamentRepository
     {
         try
         {
-            using var conn = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = new(ConnectionString);
             conn.Open();
 
             using MySqlCommand cmd = new(
@@ -266,13 +266,13 @@ public class TournamentRepository : Database, ITournamentRepository
     {
         try
         {
-            using var conn = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = new(ConnectionString);
             conn.Open();
 
-            using var cmd = new MySqlCommand("DELETE FROM `Tournament` WHERE `Id` = @id", conn);
+            using MySqlCommand cmd = new("DELETE FROM `Tournament` WHERE `Id` = @id", conn);
             cmd.Parameters.AddWithValue("@id", id);
 
-            using var cmdDeletePivot = new MySqlCommand("DELETE FROM CourtTournament WHERE TournamentsId = @id;", conn);
+            using MySqlCommand cmdDeletePivot = new("DELETE FROM CourtTournament WHERE TournamentsId = @id;", conn);
             cmdDeletePivot.Parameters.AddWithValue("@id", id);
             cmdDeletePivot.ExecuteNonQuery();
 
@@ -341,7 +341,7 @@ public class TournamentRepository : Database, ITournamentRepository
             using MySqlCommand cmd = new("SELECT EXISTS(SELECT id FROM tournament WHERE Id = @id) AS `exists`;", conn);
             cmd.Parameters.AddWithValue("@Id", id);
 
-            using var reader = cmd.ExecuteReader();
+            using MySqlDataReader reader = cmd.ExecuteReader();
 
             while (reader.Read())
             {

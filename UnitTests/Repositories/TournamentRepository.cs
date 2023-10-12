@@ -65,7 +65,7 @@ public class TournamentRepository : ITournamentRepository
             },
             CourtIds = new List<int>
             {
-                1, 2, 3, 4
+                1, 2, 3, 4,
             },
         },
         new Tournament
@@ -125,7 +125,7 @@ public class TournamentRepository : ITournamentRepository
             },
             CourtIds = new List<int>
             {
-                1, 2, 3, 4
+                1, 2, 3, 4,
             },
         },
     };

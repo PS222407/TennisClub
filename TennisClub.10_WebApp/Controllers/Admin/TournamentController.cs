@@ -19,9 +19,9 @@ public class TournamentController : Controller
     private readonly ICourtService _courtService;
 
     private readonly TournamentTransformer _tournamentTransformer = new();
-    
+
     private readonly FileService _fileService = new();
-    
+
     private readonly IWebHostEnvironment _webHostEnvironment;
 
     public TournamentController(ITournamentService tournamentService, ICourtService courtService, IWebHostEnvironment webHostEnvironment)
@@ -87,10 +87,10 @@ public class TournamentController : Controller
         {
             return View(tournamentRequest);
         }
-        
+
         Tournament tournament = _tournamentTransformer.RequestToDto(tournamentRequest);
         tournament.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
-            
+
         if (!_tournamentService.Create(tournament))
         {
             TempData["Message"] = "Fout tijdens het aanmaken.";
@@ -101,7 +101,7 @@ public class TournamentController : Controller
         TempData["Message"] = "Item succesvol aangemaakt";
         TempData["MessageType"] = "success";
 
-         return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: Tournaments/Edit/5
@@ -149,7 +149,7 @@ public class TournamentController : Controller
 
         Tournament tournament = _tournamentTransformer.RequestToDto(tournamentRequest);
         tournament.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
-        
+
         if (!_tournamentService.Edit(id, tournament))
         {
             TempData["Message"] = "Fout tijdens het opslaan van de data.";

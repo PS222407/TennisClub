@@ -12,11 +12,11 @@ public class CourtRepository : Database, ICourtRepository
 
         try
         {
-            using var conn = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = new(ConnectionString);
             conn.Open();
 
-            using var cmd = new MySqlCommand("SELECT `Id`, `Double`, `Indoor`, `Number` FROM `Court`", conn);
-            using var reader = cmd.ExecuteReader();
+            using MySqlCommand cmd = new("SELECT `Id`, `Double`, `Indoor`, `Number` FROM `Court`", conn);
+            using MySqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 courts.Add(new Court
@@ -52,10 +52,10 @@ public class CourtRepository : Database, ICourtRepository
             using MySqlCommand cmd = new("SELECT `Id`, `Double`, `Indoor`, `Number` FROM `Court` WHERE `Id` = @Id", conn);
             cmd.Parameters.AddWithValue("@Id", id);
 
-            using var reader = cmd.ExecuteReader();
+            using MySqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                Court courtDto = new Court
+                Court courtDto = new()
                 {
                     Id = reader.GetInt32("id"),
                     Double = reader.GetBoolean("double"),
@@ -84,10 +84,10 @@ public class CourtRepository : Database, ICourtRepository
     {
         try
         {
-            using var conn = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = new(ConnectionString);
             conn.Open();
 
-            using var cmd = new MySqlCommand("INSERT INTO `Court` (`Id`, `Number`, `Indoor`, `Double`) VALUES (NULL, @number, @indoor, @double);", conn);
+            using MySqlCommand cmd = new("INSERT INTO `Court` (`Id`, `Number`, `Indoor`, `Double`) VALUES (NULL, @number, @indoor, @double);", conn);
             cmd.Parameters.AddWithValue("@number", court.Number);
             cmd.Parameters.AddWithValue("@indoor", court.Indoor);
             cmd.Parameters.AddWithValue("@double", court.Double);
@@ -112,10 +112,10 @@ public class CourtRepository : Database, ICourtRepository
     {
         try
         {
-            using var conn = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = new(ConnectionString);
             conn.Open();
 
-            using var cmd = new MySqlCommand("UPDATE `Court` SET `Number` = @number, `Indoor` = @indoor,`Double` = @double WHERE `Id` = @id;", conn);
+            using MySqlCommand cmd = new("UPDATE `Court` SET `Number` = @number, `Indoor` = @indoor,`Double` = @double WHERE `Id` = @id;", conn);
             cmd.Parameters.AddWithValue("@id", id);
             cmd.Parameters.AddWithValue("@number", court.Number);
             cmd.Parameters.AddWithValue("@indoor", court.Indoor);
@@ -141,10 +141,10 @@ public class CourtRepository : Database, ICourtRepository
     {
         try
         {
-            using var conn = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = new(ConnectionString);
             conn.Open();
 
-            using var cmd = new MySqlCommand("DELETE FROM `Court` WHERE `Id` = @id", conn);
+            using MySqlCommand cmd = new("DELETE FROM `Court` WHERE `Id` = @id", conn);
             cmd.Parameters.AddWithValue("@id", id);
 
             int rowsAffected = cmd.ExecuteNonQuery();
@@ -173,7 +173,7 @@ public class CourtRepository : Database, ICourtRepository
             using MySqlCommand cmd = new("SELECT EXISTS(SELECT id FROM court WHERE Id = @id) AS `exists`;", conn);
             cmd.Parameters.AddWithValue("@Id", id);
 
-            using var reader = cmd.ExecuteReader();
+            using MySqlDataReader reader = cmd.ExecuteReader();
 
             while (reader.Read())
             {

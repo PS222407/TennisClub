@@ -7,7 +7,7 @@ namespace BusinessLogicLayer.Services;
 public class TournamentService : ITournamentService
 {
     private readonly ITournamentRepository _tournamentRepository;
-    
+
     private readonly IUserRepository _userRepository;
 
     public TournamentService(ITournamentRepository tournamentRepository, IUserRepository userRepository)
@@ -51,6 +51,7 @@ public class TournamentService : ITournamentService
                 Reason = "User does not exist",
             };
         }
+
         if (!_tournamentRepository.Exists(tournamentId))
         {
             return new StatusMessage
@@ -59,7 +60,7 @@ public class TournamentService : ITournamentService
                 Reason = "Tournament does not exist",
             };
         }
-        
+
         return _tournamentRepository.AddUser(tournamentId, userId);
     }
 }

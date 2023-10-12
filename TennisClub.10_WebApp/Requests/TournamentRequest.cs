@@ -11,24 +11,19 @@ public class TournamentRequest
     [Range(0, int.MaxValue, ErrorMessage = "Price must be a non-negative value.")]
     public int MaxMembers { get; set; }
 
-    [Required]
-    public string Name { get; set; }
+    [Required] public string Name { get; set; }
 
-    [Required]
-    public string Description { get; set; }
+    [Required] public string Description { get; set; }
 
     [Required]
     [Range(0, int.MaxValue, ErrorMessage = "Price must be a non-negative value.")]
     public int Price { get; set; }
 
-    [Required]
-    public DateTime StartDateTime { get; set; }
-    
-    [Required]
-    public List<int>? SelectedCourtIds { get; set; }
-    
+    [Required] public DateTime StartDateTime { get; set; }
+
+    [Required] public List<int>? SelectedCourtIds { get; set; }
+
     public List<SelectListItem>? CourtOptions { get; set; }
-    
-    [Required]
-    public IFormFile Image { get; set; }
+
+    [Required] public IFormFile Image { get; set; }
 }

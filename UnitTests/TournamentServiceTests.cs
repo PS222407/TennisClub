@@ -15,7 +15,7 @@ public class TournamentServiceTests
     {
         _tournamentService = new TournamentService(new TournamentRepository(), new UserRepository());
     }
-    
+
     [Test]
     public void Gets_tournament_by_id_successfully()
     {
@@ -25,7 +25,7 @@ public class TournamentServiceTests
         // Assert
         Assert.That(tournament!.Name, Is.EqualTo("ToernooiNaam2"));
     }
-    
+
     [Test]
     public void Gets_tournament_by_id_fails()
     {
@@ -35,7 +35,7 @@ public class TournamentServiceTests
         // Assert
         Assert.IsNull(tournament);
     }
-    
+
     [Test]
     public void Gets_all_tournaments_successfully()
     {
@@ -45,7 +45,7 @@ public class TournamentServiceTests
         // Assert
         Assert.That(tournaments!.Count, Is.EqualTo(2));
     }
-    
+
     [Test]
     public void Create_tournament_successfully()
     {
@@ -107,17 +107,16 @@ public class TournamentServiceTests
             },
             CourtIds = new List<int>
             {
-                1, 2, 3, 4
+                1, 2, 3, 4,
             },
         };
-        
+
         // Act
         bool result = _tournamentService!.Create(tournamentToCreate);
-        
+
         // Assert
         Assert.True(result);
     }
-
 
     [Test]
     public void Edit_tournament_successfully()
@@ -180,13 +179,13 @@ public class TournamentServiceTests
             },
             CourtIds = new List<int>
             {
-                1, 2, 3, 4
+                1, 2, 3, 4,
             },
         };
-        
+
         // Act
         bool result = _tournamentService!.Edit(2, tournamentToEdit);
-        
+
         Assert.True(result);
     }
 
@@ -251,7 +250,7 @@ public class TournamentServiceTests
             },
             CourtIds = new List<int>
             {
-                1, 2, 3, 4
+                1, 2, 3, 4,
             },
         };
 
@@ -266,27 +265,27 @@ public class TournamentServiceTests
     {
         // Arrange & Act
         bool result = _tournamentService!.Delete(2);
-        
+
         // Assert
         Assert.True(result);
     }
-    
+
     [Test]
     public void Add_user_to_tournament_successfully()
     {
         // Arrange & Act
         StatusMessage statusMessage = _tournamentService!.AddUser(1, "1");
-        
+
         // Assert
         Assert.True(statusMessage.Success);
     }
-    
+
     [Test]
     public void Add_user_to_tournament_fails()
     {
         // Arrange & Act
         StatusMessage statusMessage = _tournamentService!.AddUser(132, "1");
-        
+
         // Assert
         Assert.False(statusMessage.Success);
     }

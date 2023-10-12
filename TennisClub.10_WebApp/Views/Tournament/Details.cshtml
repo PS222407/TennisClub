@@ -13,11 +13,11 @@
     <div class="container row mb-5">
         @if (!Model.ImageUrl.IsNullOrEmpty())
         {
-            <img class="col-md-4" src="@Model.ImageUrl" alt="Tournament image" />
+            <img class="col-md-4" src="@Model.ImageUrl" alt="Tournament image"/>
         }
         else
         {
-            <img class="col-md-4" src="~/images/tournament.jpg" alt="Tournament Image" />
+            <img class="col-md-4" src="~/images/tournament.jpg" alt="Tournament Image"/>
         }
         <div class="col-md-8">
             <div> @Html.DisplayFor(model => model.Name) </div>
@@ -27,10 +27,12 @@
     <div class="row">
         <div class="col-md-9">
             <div class="mb-2">Prijs: @Html.DisplayFor(model => model.Price)</div>
-            @if(Model.Participants == null || !Model.Participants.Any()) {
+            @if (Model.Participants == null || !Model.Participants.Any())
+            {
                 <div class="mb-2">Nog @Model.MaxMembers plekken over</div>
-            } 
-            else if (Model.MaxMembers - Model.Participants.Count == 1) {
+            }
+            else if (Model.MaxMembers - Model.Participants.Count == 1)
+            {
                 <div class="mb-2">Nog @(Model.MaxMembers - Model.Participants.Count) plek over</div>
             }
             else

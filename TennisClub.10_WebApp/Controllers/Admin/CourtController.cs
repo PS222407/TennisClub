@@ -30,7 +30,7 @@ public class CourtController : Controller
             return View(new List<CourtViewModel>());
         }
 
-        List<CourtViewModel> courtViewModels = new List<CourtViewModel>();
+        List<CourtViewModel> courtViewModels = new();
         foreach (Court court in courtDtos)
         {
             courtViewModels.Add(new CourtViewModel
@@ -57,7 +57,7 @@ public class CourtController : Controller
             return View();
         }
 
-        CourtViewModel courtViewModel = new CourtViewModel
+        CourtViewModel courtViewModel = new()
         {
             Id = court.Id,
             Double = court.Double,

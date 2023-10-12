@@ -51,7 +51,7 @@ public class Tournament
             Courts.Add(court);
         }
     }
-    
+
     public bool IsValid()
     {
         return !string.IsNullOrWhiteSpace(Name) &&

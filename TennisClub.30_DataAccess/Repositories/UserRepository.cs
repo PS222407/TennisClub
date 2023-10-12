@@ -15,7 +15,7 @@ public class UserRepository : Database, IUserRepository
             using MySqlCommand cmd = new("SELECT EXISTS(SELECT id FROM aspnetusers WHERE Id = @id) AS `exists`;", conn);
             cmd.Parameters.AddWithValue("@Id", id);
 
-            using var reader = cmd.ExecuteReader();
+            using MySqlDataReader reader = cmd.ExecuteReader();
 
             while (reader.Read())
             {
