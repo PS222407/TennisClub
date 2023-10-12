@@ -15,4 +15,6 @@ public interface ITournamentRepository
     public bool Delete(int id);
     
     public StatusMessage AddUser(int tournamentId, string userId);
+    
+    bool Exists(int id);
 }

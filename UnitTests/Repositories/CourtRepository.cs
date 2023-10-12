@@ -80,4 +80,9 @@ public class CourtRepository : ICourtRepository
         _courts.Remove(courtFromList);
         return true;
     }
+
+    public bool Exists(int id)
+    {
+        return _courts.Exists(c => c.Id == id);
+    }
 }

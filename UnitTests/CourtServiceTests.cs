@@ -6,7 +6,7 @@ using UnitTests.Repositories;
 
 namespace UnitTests;
 
-public class CourtTests
+public class CourtServiceTests
 {
     private ICourtService? _courtService;
 
@@ -81,7 +81,6 @@ public class CourtTests
         }
     }
 
-
     [Test]
     public void Create_ReturnsCourt()
     {
@@ -101,11 +100,43 @@ public class CourtTests
         };
         
         // Act
-        bool returnResult = _courtService!.Create(courtToCreate);
+        bool result = _courtService!.Create(courtToCreate);
         Court? createdCourt = _courtService!.FindById(5);
         
         // Assert
-        Assert.That(returnResult, Is.True);
+        Assert.That(result, Is.True);
         createdCourt.Should().BeEquivalentTo(courtToCompare);
+    }
+    
+    [Test]
+    public void Edit_ReturnsCourt()
+    {
+        // Arrange
+        Court courtToEdit = new()
+        {
+            Id = 1,
+            Double = true,
+            Indoor = false,
+            Number = 4,
+        };
+        
+        // Act
+        bool result = _courtService!.Edit(1, courtToEdit);
+        Court? editedCourt = _courtService!.FindById(1);
+        
+        // Assert
+        Assert.That(result, Is.True);
+        editedCourt.Should().BeEquivalentTo(courtToEdit);
+    }
+
+    [Test]
+    public void Delete_ReturnsTrue()
+    {
+        // Arrange & Act
+        bool result = _courtService!.Delete(1);
+        Court? deletedCourt = _courtService!.FindById(1);
+        
+        // Assert
+        Assert.That(result && deletedCourt == null);
     }
 }

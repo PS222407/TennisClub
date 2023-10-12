@@ -183,7 +183,7 @@ public class TournamentRepository : ITournamentRepository
             };
         }
 
-        tournamentFromList.Users.Add(new User()
+        tournamentFromList.Users.Add(new User
         {
             Id = userId,
             UserName = "username",
@@ -195,5 +195,10 @@ public class TournamentRepository : ITournamentRepository
             Success = true,
             Reason = "Successfully stored in database",
         };
+    }
+
+    public bool Exists(int id)
+    {
+        return _tournaments.Exists(t => t.Id == id);
     }
 }

@@ -25,12 +25,12 @@ public class CourtService : ICourtService
 
     public bool Create(Court court)
     {
-        return _courtRepository.Create(court);
+        return court.IsValid() && _courtRepository.Create(court);
     }
 
     public bool Edit(int id, Court court)
     {
-        return _courtRepository.Edit(id, court);
+        return court.IsValid() && _courtRepository.Exists(id) && _courtRepository.Edit(id, court);
     }
 
     public bool Delete(int id)

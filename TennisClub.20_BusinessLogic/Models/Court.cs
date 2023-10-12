@@ -1,13 +1,17 @@
-﻿namespace BusinessLogicLayer.Models
+﻿namespace BusinessLogicLayer.Models;
+
+public class Court
 {
-    public class Court
+    public int Id { get; set; }
+
+    public int Number { get; set; }
+
+    public bool Indoor { get; set; }
+
+    public bool Double { get; set; }
+    
+    public bool IsValid()
     {
-        public int Id { get; set; }
-
-        public int Number { get; set; }
-
-        public bool Indoor { get; set; }
-
-        public bool Double { get; set; }
+        return Number > 0;
     }
 }

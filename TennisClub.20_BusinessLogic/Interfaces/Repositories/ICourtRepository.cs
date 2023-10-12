@@ -13,4 +13,6 @@ public interface ICourtRepository
     public bool Edit(int id, Court court);
 
     public bool Delete(int id);
+    
+    bool Exists(int id);
 }

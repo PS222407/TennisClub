@@ -19,7 +19,7 @@ public class Tournament
     public List<Court> Courts { get; set; } = new();
 
     private List<int>? _courtIds;
-    
+
     public List<int>? CourtIds
     {
         get
@@ -28,12 +28,13 @@ public class Tournament
             {
                 return Courts.Select(court => court.Id).ToList();
             }
+
             return _courtIds;
         }
         set => _courtIds = value;
     }
 
-    public string? ImageUrl { get; set; }
+    public string ImageUrl { get; set; }
 
     public void AddUser(User user)
     {
@@ -49,5 +50,16 @@ public class Tournament
         {
             Courts.Add(court);
         }
+    }
+    
+    public bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(Name) &&
+               !string.IsNullOrWhiteSpace(Description) &&
+               Price > 0 &&
+               MaxMembers > 0 &&
+               StartDateTime > DateTime.Now &&
+               !string.IsNullOrEmpty(ImageUrl) &&
+               _courtIds != null && _courtIds.Count > 0;
     }
 }

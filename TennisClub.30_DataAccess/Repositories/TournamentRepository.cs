@@ -78,7 +78,7 @@ public class TournamentRepository : Database, ITournamentRepository
             return null;
         }
     }
-    
+
     public Tournament? FindById(int id)
     {
         Tournament tournament = new Tournament
@@ -86,12 +86,12 @@ public class TournamentRepository : Database, ITournamentRepository
             Courts = new List<Court>(),
             Users = new List<User>(),
         };
-    
+
         try
         {
             using MySqlConnection conn = new(ConnectionString);
             conn.Open();
-    
+
             using MySqlCommand cmd = new("SELECT t.Id, t.Name, t.Description, t.Price, t.MaxMembers, t.StartDateTime, t.ImageUrl, " +
                                          "c.Id AS c_Id, c.Number AS c_Number, c.Indoor AS c_Indoor, c.Double AS c_Double, " +
                                          "u.Id AS u_Id, u.UserName AS u_UserName " +
@@ -102,10 +102,10 @@ public class TournamentRepository : Database, ITournamentRepository
                                          "LEFT JOIN AspnetUsers AS u ON tu.UsersId = u.Id " +
                                          "WHERE t.Id = @Id;", conn);
             cmd.Parameters.AddWithValue("@Id", id);
-    
+
             using var reader = cmd.ExecuteReader();
             bool firstIteration = true;
-    
+
             while (reader.Read())
             {
                 if (firstIteration)
@@ -118,7 +118,7 @@ public class TournamentRepository : Database, ITournamentRepository
                     tournament.StartDateTime = reader.GetDateTime("startdatetime");
                     tournament.ImageUrl = reader.GetString("imageurl");
                 }
-    
+
                 if (!reader.IsDBNull(reader.GetOrdinal("c_id")))
                 {
                     Court courtDto = new Court
@@ -130,7 +130,7 @@ public class TournamentRepository : Database, ITournamentRepository
                     };
                     tournament.AddCourt(courtDto);
                 }
-    
+
                 if (!reader.IsDBNull(reader.GetOrdinal("u_id")))
                 {
                     User userDto = new User
@@ -140,10 +140,10 @@ public class TournamentRepository : Database, ITournamentRepository
                     };
                     tournament.AddUser(userDto);
                 }
-    
+
                 firstIteration = false;
             }
-    
+
             return !firstIteration ? tournament : null;
         }
         catch (MySqlException ex)
@@ -157,14 +157,14 @@ public class TournamentRepository : Database, ITournamentRepository
             return null;
         }
     }
-    
+
     public bool Create(Tournament tournament)
     {
         try
         {
             using MySqlConnection conn = new(ConnectionString);
             conn.Open();
-    
+
             using MySqlCommand cmd = new(
                 "INSERT INTO `Tournament` (`Name`, `Description`, `Price`, `MaxMembers`, `StartDateTime`, `ImageUrl`) VALUES (@name, @description, @price, @maxMembers, @startDateTime, @imageUrl); SELECT LAST_INSERT_ID();",
                 conn);
@@ -176,7 +176,7 @@ public class TournamentRepository : Database, ITournamentRepository
             cmd.Parameters.AddWithValue("@imageUrl", tournament.ImageUrl);
             object? lastInsertedId = cmd.ExecuteScalar();
             bool tournamentSuccess = lastInsertedId != null;
-    
+
             bool pivotSuccess = true;
             if (tournament.CourtIds != null)
             {
@@ -186,14 +186,14 @@ public class TournamentRepository : Database, ITournamentRepository
                     cmdPivot.Parameters.Clear();
                     cmdPivot.Parameters.AddWithValue("@courtsid", courtId);
                     cmdPivot.Parameters.AddWithValue("@tournamentsid", lastInsertedId);
-    
+
                     if (cmdPivot.ExecuteNonQuery() <= 0)
                     {
                         pivotSuccess = false;
                     }
                 }
             }
-    
+
             return tournamentSuccess && pivotSuccess;
         }
         catch (MySqlException ex)
@@ -207,14 +207,14 @@ public class TournamentRepository : Database, ITournamentRepository
             return false;
         }
     }
-    
+
     public bool Edit(int id, Tournament tournament)
     {
         try
         {
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
-    
+
             using MySqlCommand cmd = new(
                 "UPDATE `Tournament` SET `Name` = @name, `Description` = @description,`Price` = @price,`MaxMembers` = @maxMembers,`StartDateTime` = @startDateTime, `ImageUrl` = @imageUrl WHERE `Id` = @id;",
                 conn);
@@ -226,11 +226,11 @@ public class TournamentRepository : Database, ITournamentRepository
             cmd.Parameters.AddWithValue("@startDateTime", tournament.StartDateTime);
             cmd.Parameters.AddWithValue("@imageUrl", tournament.ImageUrl);
             bool tournamentSuccess = cmd.ExecuteNonQuery() > 0;
-    
+
             using MySqlCommand cmdDeletePivot = new("DELETE FROM CourtTournament WHERE TournamentsId = @id;", conn);
             cmdDeletePivot.Parameters.AddWithValue("@id", id);
             cmdDeletePivot.ExecuteNonQuery();
-    
+
             bool pivotSuccess = true;
             if (tournament.CourtIds != null)
             {
@@ -240,14 +240,14 @@ public class TournamentRepository : Database, ITournamentRepository
                     cmdPivot.Parameters.Clear();
                     cmdPivot.Parameters.AddWithValue("@courtsid", courtId);
                     cmdPivot.Parameters.AddWithValue("@tournamentsid", id);
-    
+
                     if (cmdPivot.ExecuteNonQuery() <= 0)
                     {
                         pivotSuccess = false;
                     }
                 }
             }
-    
+
             return tournamentSuccess && pivotSuccess;
         }
         catch (MySqlException ex)
@@ -261,23 +261,23 @@ public class TournamentRepository : Database, ITournamentRepository
             return false;
         }
     }
-    
+
     public bool Delete(int id)
     {
         try
         {
             using var conn = new MySqlConnection(ConnectionString);
             conn.Open();
-    
+
             using var cmd = new MySqlCommand("DELETE FROM `Tournament` WHERE `Id` = @id", conn);
             cmd.Parameters.AddWithValue("@id", id);
-    
+
             using var cmdDeletePivot = new MySqlCommand("DELETE FROM CourtTournament WHERE TournamentsId = @id;", conn);
             cmdDeletePivot.Parameters.AddWithValue("@id", id);
             cmdDeletePivot.ExecuteNonQuery();
-    
+
             int rowsAffected = cmd.ExecuteNonQuery();
-    
+
             return rowsAffected > 0;
         }
         catch (MySqlException ex)
@@ -291,19 +291,19 @@ public class TournamentRepository : Database, ITournamentRepository
             return false;
         }
     }
-    
+
     public StatusMessage AddUser(int tournamentId, string userId)
     {
         try
         {
             using MySqlConnection conn = new(ConnectionString);
             conn.Open();
-    
+
             using MySqlCommand cmd = new("INSERT INTO `TournamentUser` (`UsersId`, `TournamentsId`) VALUES (@userId, @tournamentId);", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
             cmd.Parameters.AddWithValue("@tournamentId", tournamentId);
             cmd.ExecuteNonQuery();
-    
+
             return new StatusMessage
             {
                 Success = true,
@@ -328,6 +328,37 @@ public class TournamentRepository : Database, ITournamentRepository
                 Success = false,
                 Reason = "Failed to store in database",
             };
+        }
+    }
+
+    public bool Exists(int id)
+    {
+        try
+        {
+            using MySqlConnection conn = new(ConnectionString);
+            conn.Open();
+
+            using MySqlCommand cmd = new("SELECT EXISTS(SELECT id FROM tournament WHERE Id = @id) AS `exists`;", conn);
+            cmd.Parameters.AddWithValue("@Id", id);
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                return reader.GetBoolean("exists");
+            }
+
+            return false;
+        }
+        catch (MySqlException ex)
+        {
+            Console.WriteLine("An error occurred while connecting to the database: " + ex.Message);
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
+            return false;
         }
     }
 }
