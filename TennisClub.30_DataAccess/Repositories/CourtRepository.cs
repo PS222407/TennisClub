@@ -55,7 +55,7 @@ public class CourtRepository : Database, ICourtRepository
             using MySqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                Court courtDto = new()
+                Court court = new()
                 {
                     Id = reader.GetInt32("id"),
                     Double = reader.GetBoolean("double"),
@@ -63,7 +63,7 @@ public class CourtRepository : Database, ICourtRepository
                     Number = reader.GetInt32("number"),
                 };
 
-                return courtDto;
+                return court;
             }
 
             return null;

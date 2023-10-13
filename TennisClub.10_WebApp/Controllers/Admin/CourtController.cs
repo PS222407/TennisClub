@@ -21,8 +21,8 @@ public class CourtController : Controller
     // GET: Courts
     public ActionResult Index()
     {
-        List<Court>? courtDtos = _courtService.GetAll();
-        if (courtDtos == null)
+        List<Court>? courts = _courtService.GetAll();
+        if (courts == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
@@ -31,7 +31,7 @@ public class CourtController : Controller
         }
 
         List<CourtViewModel> courtViewModels = new();
-        foreach (Court court in courtDtos)
+        foreach (Court court in courts)
         {
             courtViewModels.Add(new CourtViewModel
             {

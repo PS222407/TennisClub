@@ -8,9 +8,9 @@ public interface ITournamentService
 
     public Tournament? FindById(int id);
 
-    public bool Create(Tournament tournamentDto);
+    public bool Create(Tournament tournament);
 
-    public bool Edit(int id, Tournament tournamentDto);
+    public bool Edit(int id, Tournament tournament);
 
     public bool Delete(int id);
 

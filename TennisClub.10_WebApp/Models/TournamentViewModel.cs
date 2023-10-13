@@ -4,13 +4,19 @@ namespace TennisClub_0._1.Models;
 
 public class TournamentViewModel
 {
+    private double _price;
+
     public int Id { get; set; }
 
     public string Name { get; set; }
 
     public string Description { get; set; }
 
-    public int Price { get; set; }
+    public double Price
+    {
+        get => _price;
+        set => _price = value / 100;
+    }
 
     public int MaxMembers { get; set; }
 

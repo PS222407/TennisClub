@@ -34,8 +34,8 @@ public class TournamentController : Controller
     // GET: Tournaments
     public ActionResult Index()
     {
-        List<Tournament>? tournamentDtos = _tournamentService.GetAll();
-        if (tournamentDtos == null)
+        List<Tournament>? tournaments = _tournamentService.GetAll();
+        if (tournaments == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
@@ -43,14 +43,14 @@ public class TournamentController : Controller
             return View(new List<TournamentViewModel>());
         }
 
-        return View(_tournamentTransformer.ModelsToViews(tournamentDtos));
+        return View(_tournamentTransformer.ModelsToViews(tournaments));
     }
 
     // GET: Tournaments/Details/5
     public ActionResult Details(int id)
     {
-        Tournament? tournamentDto = _tournamentService.FindById(id);
-        if (tournamentDto == null)
+        Tournament? tournament = _tournamentService.FindById(id);
+        if (tournament == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
@@ -58,21 +58,15 @@ public class TournamentController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        return View(_tournamentTransformer.ModelToView(tournamentDto));
+        return View(_tournamentTransformer.ModelToView(tournament));
     }
 
     // GET: Tournaments/Create
     public ActionResult Create()
     {
-        List<Court>? courtDtos = _courtService.GetAll();
-
         TournamentRequest tournamentRequest = new()
         {
-            CourtOptions = courtDtos?.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Number.ToString(),
-            }).ToList(),
+            CourtOptions = GetCourtOptions(),
         };
 
         return View(tournamentRequest);
@@ -85,16 +79,19 @@ public class TournamentController : Controller
     {
         if (!ModelState.IsValid)
         {
+            tournamentRequest.CourtOptions = GetCourtOptions();
             return View(tournamentRequest);
         }
 
-        Tournament tournament = _tournamentTransformer.RequestToDto(tournamentRequest);
-        tournament.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
+        Tournament tournament = _tournamentTransformer.RequestToModel(tournamentRequest);
+        tournament.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment) ?? "";
 
         if (!_tournamentService.Create(tournament))
         {
             TempData["Message"] = "Fout tijdens het aanmaken.";
             TempData["MessageType"] = "danger";
+            
+            tournamentRequest.CourtOptions = GetCourtOptions();
             return View(tournamentRequest);
         }
 
@@ -107,8 +104,8 @@ public class TournamentController : Controller
     // GET: Tournaments/Edit/5
     public ActionResult Edit(int id)
     {
-        Tournament? tournamentDto = _tournamentService.FindById(id);
-        if (tournamentDto == null)
+        Tournament? tournament = _tournamentService.FindById(id);
+        if (tournament == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
@@ -116,22 +113,16 @@ public class TournamentController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        List<Court>? courtDtos = _courtService.GetAll();
-
         TournamentRequest tournamentRequest = new()
         {
-            Id = tournamentDto.Id,
-            Name = tournamentDto.Name,
-            Description = tournamentDto.Description,
-            Price = tournamentDto.Price,
-            MaxMembers = tournamentDto.MaxMembers,
-            StartDateTime = tournamentDto.StartDateTime,
-            CourtOptions = courtDtos?.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Number.ToString(),
-            }).ToList(),
-            SelectedCourtIds = tournamentDto.CourtIds,
+            Id = tournament.Id,
+            Name = tournament.Name,
+            Description = tournament.Description,
+            Price = tournament.Price,
+            MaxMembers = tournament.MaxMembers,
+            StartDateTime = tournament.StartDateTime,
+            CourtOptions = GetCourtOptions(),
+            SelectedCourtIds = tournament.CourtIds,
         };
 
         return View(tournamentRequest);
@@ -147,8 +138,8 @@ public class TournamentController : Controller
             return View(tournamentRequest);
         }
 
-        Tournament tournament = _tournamentTransformer.RequestToDto(tournamentRequest);
-        tournament.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment);
+        Tournament tournament = _tournamentTransformer.RequestToModel(tournamentRequest);
+        tournament.ImageUrl = await _fileService.SaveImageAsync(tournamentRequest.Image, _webHostEnvironment) ?? "";
 
         if (!_tournamentService.Edit(id, tournament))
         {
@@ -167,8 +158,8 @@ public class TournamentController : Controller
     // GET: Tournaments/Delete/5
     public ActionResult Delete(int id)
     {
-        Tournament? tournamentDto = _tournamentService.FindById(id);
-        if (tournamentDto == null)
+        Tournament? tournament = _tournamentService.FindById(id);
+        if (tournament == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van de data.";
             TempData["MessageType"] = "danger";
@@ -176,7 +167,7 @@ public class TournamentController : Controller
             return View();
         }
 
-        return View(_tournamentTransformer.ModelToView(tournamentDto));
+        return View(_tournamentTransformer.ModelToView(tournament));
     }
 
     // POST: Tournaments/Delete/5
@@ -196,5 +187,14 @@ public class TournamentController : Controller
         TempData["MessageType"] = "success";
 
         return RedirectToAction(nameof(Index));
+    }
+
+    private List<SelectListItem>? GetCourtOptions()
+    {
+        return _courtService.GetAll()?.Select(c => new SelectListItem
+        {
+            Value = c.Id.ToString(),
+            Text = c.Number.ToString(),
+        }).ToList();
     }
 }

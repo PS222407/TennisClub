@@ -9,7 +9,7 @@ public class TournamentRepository : Database, ITournamentRepository
 {
     public List<Tournament>? GetAll()
     {
-        List<Tournament> tournamentDtos = new();
+        List<Tournament> tournaments = new();
 
         try
         {
@@ -28,9 +28,9 @@ public class TournamentRepository : Database, ITournamentRepository
             while (reader.Read())
             {
                 int tournamentId = reader.GetInt32("id");
-                if (!tournamentDtos.Any(t => t.Id == tournamentId))
+                if (!tournaments.Any(t => t.Id == tournamentId))
                 {
-                    tournamentDtos.Add(new Tournament
+                    tournaments.Add(new Tournament
                     {
                         Id = reader.GetInt32("id"),
                         Name = reader.GetString("name"),
@@ -42,7 +42,7 @@ public class TournamentRepository : Database, ITournamentRepository
                     });
                 }
 
-                Tournament tournament = tournamentDtos.Find(t => t.Id == tournamentId)!;
+                Tournament tournament = tournaments.Find(t => t.Id == tournamentId)!;
 
                 if (!reader.IsDBNull(reader.GetOrdinal("c_id")))
                 {
@@ -65,7 +65,7 @@ public class TournamentRepository : Database, ITournamentRepository
                 }
             }
 
-            return tournamentDtos;
+            return tournaments;
         }
         catch (MySqlException ex)
         {
@@ -121,24 +121,24 @@ public class TournamentRepository : Database, ITournamentRepository
 
                 if (!reader.IsDBNull(reader.GetOrdinal("c_id")))
                 {
-                    Court courtDto = new()
+                    Court court = new()
                     {
                         Id = reader.GetInt32("c_id"),
                         Number = reader.GetInt32("c_number"),
                         Double = reader.GetBoolean("c_double"),
                         Indoor = reader.GetBoolean("c_indoor"),
                     };
-                    tournament.AddCourt(courtDto);
+                    tournament.AddCourt(court);
                 }
 
                 if (!reader.IsDBNull(reader.GetOrdinal("u_id")))
                 {
-                    User userDto = new()
+                    User user = new()
                     {
                         Id = reader.GetString("u_id"),
                         UserName = reader.GetString("u_username"),
                     };
-                    tournament.AddUser(userDto);
+                    tournament.AddUser(user);
                 }
 
                 firstIteration = false;

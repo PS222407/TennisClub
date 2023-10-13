@@ -8,9 +8,9 @@ namespace TennisClub_0._1.Services;
 
 public class TournamentTransformer
 {
-    public List<TournamentViewModel> ModelsToViews(List<Tournament> tournamentDtos)
+    public List<TournamentViewModel> ModelsToViews(List<Tournament> tournaments)
     {
-        return tournamentDtos.Select(ModelToView).ToList();
+        return tournaments.Select(ModelToView).ToList();
     }
 
     public TournamentViewModel ModelToView(Tournament tournament)
@@ -63,20 +63,20 @@ public class TournamentTransformer
             MaxMembers = tournamentRequest.MaxMembers,
             Name = tournamentRequest.Name,
             Description = tournamentRequest.Description,
-            Price = tournamentRequest.Price,
+            Price = Convert.ToInt32(tournamentRequest.Price * 100),
             StartDateTime = tournamentRequest.StartDateTime,
             SelectedCourtIds = tournamentRequest.SelectedCourtIds,
             CourtOptions = tournamentRequest.CourtOptions,
         };
     }
 
-    public Tournament RequestToDto(TournamentRequest tournamentRequest)
+    public Tournament RequestToModel(TournamentRequest tournamentRequest)
     {
         return new Tournament
         {
             Name = tournamentRequest.Name,
             Description = tournamentRequest.Description,
-            Price = tournamentRequest.Price,
+            Price = Convert.ToInt32(tournamentRequest.Price * 100),
             MaxMembers = tournamentRequest.MaxMembers,
             StartDateTime = tournamentRequest.StartDateTime,
             CourtIds = tournamentRequest.SelectedCourtIds,

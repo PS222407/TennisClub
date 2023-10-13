@@ -23,8 +23,8 @@ public class TournamentController : Controller
     // GET
     public ActionResult Index()
     {
-        List<Tournament>? tournamentDtos = _tournamentService.GetAll();
-        if (tournamentDtos == null)
+        List<Tournament>? tournaments = _tournamentService.GetAll();
+        if (tournaments == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
@@ -32,14 +32,14 @@ public class TournamentController : Controller
             return View(new List<TournamentViewModel>());
         }
 
-        return View(_tournamentTransformer.ModelsToViews(tournamentDtos));
+        return View(_tournamentTransformer.ModelsToViews(tournaments));
     }
 
     // GET: Tournament/Details/5
     public ActionResult Details(int id)
     {
-        Tournament? tournamentDto = _tournamentService.FindById(id);
-        if (tournamentDto == null)
+        Tournament? tournament = _tournamentService.FindById(id);
+        if (tournament == null)
         {
             TempData["Message"] = "Fout tijdens het ophalen van data.";
             TempData["MessageType"] = "danger";
@@ -47,7 +47,7 @@ public class TournamentController : Controller
             return View();
         }
 
-        return View(_tournamentTransformer.ModelToView(tournamentDto));
+        return View(_tournamentTransformer.ModelToView(tournament));
     }
 
     [HttpGet("Tournament/Join/{id:int}")]
