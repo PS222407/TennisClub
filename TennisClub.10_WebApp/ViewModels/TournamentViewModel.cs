@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace TennisClub_0._1.Models;
+namespace TennisClub_0._1.ViewModels;
 
 public class TournamentViewModel
 {

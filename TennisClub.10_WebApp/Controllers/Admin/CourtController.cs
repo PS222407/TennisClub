@@ -1,8 +1,8 @@
 using BusinessLogicLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TennisClub_0._1.Models;
 using TennisClub_0._1.Requests;
+using TennisClub_0._1.ViewModels;
 using Court = BusinessLogicLayer.Models.Court;
 
 namespace TennisClub_0._1.Controllers.Admin;

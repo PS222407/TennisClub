@@ -3,8 +3,8 @@ using BusinessLogicLayer;
 using BusinessLogicLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TennisClub_0._1.Models;
 using TennisClub_0._1.Services;
+using TennisClub_0._1.ViewModels;
 using Tournament = BusinessLogicLayer.Models.Tournament;
 
 namespace TennisClub_0._1.Controllers;

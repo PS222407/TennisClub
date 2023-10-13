@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TennisClub_0._1.Models;
+using TennisClub_0._1.Migrations.Models;
 
 namespace TennisClub_0._1.Data;
 

@@ -1,6 +1,6 @@
-﻿namespace TennisClub_0._1.Models;
+﻿namespace TennisClub_0._1.ViewModels;
 
-public class Court
+public class CourtViewModel
 {
     public int Id { get; set; }
 
@@ -9,6 +9,4 @@ public class Court
     public bool Indoor { get; set; }
 
     public bool Double { get; set; }
-
-    public List<Tournament>? Tournaments { get; set; }
 }

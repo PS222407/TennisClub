@@ -1,5 +1,7 @@
-using TennisClub_0._1.Models;
+using BusinessLogicLayer.Interfaces.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using TennisClub_0._1.Requests;
+using TennisClub_0._1.ViewModels;
 using Court = BusinessLogicLayer.Models.Court;
 using Tournament = BusinessLogicLayer.Models.Tournament;
 using User = BusinessLogicLayer.Models.User;
@@ -80,6 +82,27 @@ public class TournamentTransformer
             MaxMembers = tournamentRequest.MaxMembers,
             StartDateTime = tournamentRequest.StartDateTime,
             CourtIds = tournamentRequest.SelectedCourtIds,
+        };
+    }
+
+    public TournamentRequest ModelToRequest(Tournament tournament, ICourtService courtService)
+    {
+        List<SelectListItem>? courtOptions = courtService.GetAll()?.Select(c => new SelectListItem
+        {
+            Value = c.Id.ToString(),
+            Text = c.Number.ToString(),
+        }).ToList();
+
+        return new TournamentRequest
+        {
+            Id = tournament.Id,
+            Name = tournament.Name,
+            Description = tournament.Description,
+            Price = tournament.Price,
+            MaxMembers = tournament.MaxMembers,
+            StartDateTime = tournament.StartDateTime,
+            CourtOptions = courtOptions,
+            SelectedCourtIds = tournament.CourtIds,
         };
     }
 }

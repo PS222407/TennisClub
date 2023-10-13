@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using TennisClub_0._1.Models;
+using TennisClub_0._1.ViewModels;
 
 namespace TennisClub_0._1.Controllers;
 

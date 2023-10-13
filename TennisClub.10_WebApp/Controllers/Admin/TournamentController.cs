@@ -2,10 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using TennisClub_0._1.Models;
 using TennisClub_0._1.Requests;
 using TennisClub_0._1.Services;
-using Court = BusinessLogicLayer.Models.Court;
+using TennisClub_0._1.ViewModels;
 using Tournament = BusinessLogicLayer.Models.Tournament;
 
 namespace TennisClub_0._1.Controllers.Admin;
@@ -113,19 +112,7 @@ public class TournamentController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        TournamentRequest tournamentRequest = new()
-        {
-            Id = tournament.Id,
-            Name = tournament.Name,
-            Description = tournament.Description,
-            Price = tournament.Price,
-            MaxMembers = tournament.MaxMembers,
-            StartDateTime = tournament.StartDateTime,
-            CourtOptions = GetCourtOptions(),
-            SelectedCourtIds = tournament.CourtIds,
-        };
-
-        return View(tournamentRequest);
+        return View(_tournamentTransformer.ModelToRequest(tournament, _courtService));
     }
 
     // POST: Tournaments/Edit/5
