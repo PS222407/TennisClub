@@ -2,6 +2,7 @@ using BusinessLogicLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TennisClub_0._1.Requests;
+using TennisClub_0._1.Services;
 using TennisClub_0._1.ViewModels;
 using Court = BusinessLogicLayer.Models.Court;
 
@@ -12,6 +13,7 @@ namespace TennisClub_0._1.Controllers.Admin;
 public class CourtController : Controller
 {
     private readonly ICourtService _courtService;
+    private readonly CourtTransformer _courtTransformer = new();
 
     public CourtController(ICourtService courtService)
     {
@@ -30,19 +32,7 @@ public class CourtController : Controller
             return View(new List<CourtViewModel>());
         }
 
-        List<CourtViewModel> courtViewModels = new();
-        foreach (Court court in courts)
-        {
-            courtViewModels.Add(new CourtViewModel
-            {
-                Id = court.Id,
-                Double = court.Double,
-                Indoor = court.Indoor,
-                Number = court.Number,
-            });
-        }
-
-        return View(courtViewModels);
+        return View(_courtTransformer.ModelsToViews(courts));
     }
 
     // GET: Courts/Details/5
@@ -57,15 +47,7 @@ public class CourtController : Controller
             return View();
         }
 
-        CourtViewModel courtViewModel = new()
-        {
-            Id = court.Id,
-            Double = court.Double,
-            Indoor = court.Indoor,
-            Number = court.Number,
-        };
-
-        return View(courtViewModel);
+        return View(_courtTransformer.ModelToView(court));
     }
 
     // GET: Courts/Create
@@ -83,14 +65,8 @@ public class CourtController : Controller
         {
             return View();
         }
-
-        Court court = new()
-        {
-            Double = courtRequest.Double,
-            Indoor = courtRequest.Indoor,
-            Number = courtRequest.Number,
-        };
-        if (!_courtService.Create(court))
+        
+        if (!_courtService.Create(_courtTransformer.RequestToModel(courtRequest)))
         {
             TempData["Message"] = "Fout tijdens het aanmaken.";
             TempData["MessageType"] = "danger";
@@ -115,15 +91,7 @@ public class CourtController : Controller
             return View();
         }
 
-        CourtViewModel courtViewModel = new()
-        {
-            Id = court.Id,
-            Double = court.Double,
-            Indoor = court.Indoor,
-            Number = court.Number,
-        };
-
-        return View(courtViewModel);
+        return View(_courtTransformer.ModelToView(court));
     }
 
     // POST: Courts/Edit/5
@@ -136,13 +104,7 @@ public class CourtController : Controller
             return View();
         }
 
-        Court court = new()
-        {
-            Double = courtRequest.Double,
-            Indoor = courtRequest.Indoor,
-            Number = courtRequest.Number,
-        };
-        if (!_courtService.Edit(id, court))
+        if (!_courtService.Edit(id, _courtTransformer.RequestToModel(courtRequest)))
         {
             TempData["Message"] = "Fout tijdens het opslaan van de data.";
             TempData["MessageType"] = "danger";
@@ -168,15 +130,7 @@ public class CourtController : Controller
             return View();
         }
 
-        CourtViewModel courtViewModel = new()
-        {
-            Id = court.Id,
-            Double = court.Double,
-            Indoor = court.Indoor,
-            Number = court.Number,
-        };
-
-        return View(courtViewModel);
+        return View(_courtTransformer.ModelToView(court));
     }
 
     // POST: Courts/Delete/5

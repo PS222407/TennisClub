@@ -7,20 +7,27 @@
     Layout = "_Layout";
 }
 
+@if (!Model.Any())
+{
+    <div class="container row mb-5">
+        <h2> Er staan geen toernooien gepland </h2>
+    </div>
+}
+
 @foreach (TournamentViewModel? item in Model)
 {
     <div class="container row mb-5">
         @if (!item.ImageUrl.IsNullOrEmpty())
         {
-            <img class="col-md-3" src="@item.ImageUrl" alt="Tournament Image"/>
+            <img class="col-md-3" src="@item.ImageUrl" alt="Tournament Image" style="max-height: 300px; object-fit: contain"/>
         }
         else
         {
-            <img class="col-md-3" src="~/images/tournament.jpg" alt="Tournament Image"/>
+            <img class="col-md-3" src="~/images/tournament.jpg" alt="Tournament Image" style="max-height: 300px; object-fit: contain"/>
         }
         <div class="col-md-6">
-            <div> @Html.DisplayFor(modelItem => item.Name) </div>
-            <div> @Html.DisplayFor(modelItem => item.Description)</div>
+            <h2> @Html.DisplayFor(modelItem => item.Name) </h2>
+            <p> @Html.DisplayFor(modelItem => item.Description)</p>
         </div>
         <div class="col-md-3 border-start">
             <div class="d-flex align-items-center justify-content-center h-100">

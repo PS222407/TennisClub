@@ -180,17 +180,19 @@ public class TournamentRepository : Database, ITournamentRepository
             bool pivotSuccess = true;
             if (tournament.CourtIds != null)
             {
-                using MySqlCommand cmdPivot = new("INSERT INTO `CourtTournament` (`CourtsId`, `TournamentsId`) VALUES (@courtsid, @tournamentsid);", conn);
+                using MySqlCommand cmdPivot = new("INSERT INTO `CourtTournament` (`CourtsId`, `TournamentsId`) VALUES ", conn);
+                string values = string.Join(", ", tournament.CourtIds.Select(courtId => $"(@courtid_{courtId}, @tournamentid_{courtId})"));
+                cmdPivot.CommandText += values + ";";
+
                 foreach (int courtId in tournament.CourtIds)
                 {
-                    cmdPivot.Parameters.Clear();
-                    cmdPivot.Parameters.AddWithValue("@courtsid", courtId);
-                    cmdPivot.Parameters.AddWithValue("@tournamentsid", lastInsertedId);
+                    cmdPivot.Parameters.AddWithValue($"@courtid_{courtId}", courtId);
+                    cmdPivot.Parameters.AddWithValue($"@tournamentid_{courtId}", lastInsertedId);
+                }
 
-                    if (cmdPivot.ExecuteNonQuery() <= 0)
-                    {
-                        pivotSuccess = false;
-                    }
+                if (cmdPivot.ExecuteNonQuery() <= 0)
+                {
+                    pivotSuccess = false;
                 }
             }
 
@@ -234,17 +236,19 @@ public class TournamentRepository : Database, ITournamentRepository
             bool pivotSuccess = true;
             if (tournament.CourtIds != null)
             {
-                using MySqlCommand cmdPivot = new("INSERT INTO `CourtTournament` (`CourtsId`, `TournamentsId`) VALUES (@courtsid, @tournamentsid);", conn);
+                using MySqlCommand cmdPivot = new("INSERT INTO `CourtTournament` (`CourtsId`, `TournamentsId`) VALUES ", conn);
+                string values = string.Join(", ", tournament.CourtIds.Select(courtId => $"(@courtid_{courtId}, @tournamentid_{courtId})"));
+                cmdPivot.CommandText += values + ";";
+
                 foreach (int courtId in tournament.CourtIds)
                 {
-                    cmdPivot.Parameters.Clear();
-                    cmdPivot.Parameters.AddWithValue("@courtsid", courtId);
-                    cmdPivot.Parameters.AddWithValue("@tournamentsid", id);
+                    cmdPivot.Parameters.AddWithValue($"@courtid_{courtId}", courtId);
+                    cmdPivot.Parameters.AddWithValue($"@tournamentid_{courtId}", id);
+                }
 
-                    if (cmdPivot.ExecuteNonQuery() <= 0)
-                    {
-                        pivotSuccess = false;
-                    }
+                if (cmdPivot.ExecuteNonQuery() <= 0)
+                {
+                    pivotSuccess = false;
                 }
             }
 

@@ -13,31 +13,31 @@
     <div class="container row mb-5">
         @if (!Model.ImageUrl.IsNullOrEmpty())
         {
-            <img class="col-md-4" src="@Model.ImageUrl" alt="Tournament image"/>
+            <img class="col-md-4" src="@Model.ImageUrl" alt="Tournament image" style="max-height: 300px; object-fit: contain;"/>
         }
         else
         {
-            <img class="col-md-4" src="~/images/tournament.jpg" alt="Tournament Image"/>
+            <img class="col-md-4" src="~/images/tournament.jpg" alt="Tournament Image" style="max-height: 300px; object-fit: contain;"/>
         }
         <div class="col-md-8">
-            <div> @Html.DisplayFor(model => model.Name) </div>
-            <div> @Html.DisplayFor(model => model.Description)</div>
+            <h2> @Html.DisplayFor(model => model.Name) </h2>
+            <p> @Html.DisplayFor(model => model.Description)</p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-9">
-            <div class="mb-2">Prijs: @Html.DisplayFor(model => model.Price)</div>
+            <div class="mb-2"><b>Prijs:</b> @Html.DisplayFor(model => model.Price)</div>
             @if (Model.Participants == null || !Model.Participants.Any())
             {
-                <div class="mb-2">Nog @Model.MaxMembers plekken over</div>
+                <div class="mb-2">Nog <b>@Model.MaxMembers</b> plekken over</div>
             }
             else if (Model.MaxMembers - Model.Participants.Count == 1)
             {
-                <div class="mb-2">Nog @(Model.MaxMembers - Model.Participants.Count) plek over</div>
+                <div class="mb-2">Nog <b>@(Model.MaxMembers - Model.Participants.Count)</b> plek over</div>
             }
             else
             {
-                <div class="mb-2">Nog @(Model.MaxMembers - Model.Participants.Count) plekken over</div>
+                <div class="mb-2">Nog <b>@(Model.MaxMembers - Model.Participants.Count)</b> plekken over</div>
             }
         </div>
         <div class="col-md-3">
