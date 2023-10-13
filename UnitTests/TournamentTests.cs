@@ -71,11 +71,11 @@ public class TournamentTests
 
         // Act
         bool result = tournament.IsValid();
-        
+
         // Assert
         Assert.That(result, Is.True);
     }
-    
+
     [Test]
     public void Tournament_validates_fails()
     {
@@ -143,7 +143,7 @@ public class TournamentTests
 
         // Act
         bool result = tournament.IsValid();
-        
+
         // Assert
         Assert.That(result, Is.False);
     }

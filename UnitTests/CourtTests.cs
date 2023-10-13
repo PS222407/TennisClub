@@ -22,7 +22,7 @@ public class CourtTests
         // Assert
         Assert.That(isValid, Is.True);
     }
-    
+
     [Test]
     public void Court_validation_fails()
     {

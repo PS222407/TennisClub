@@ -20,9 +20,7 @@ public class TournamentRequest
     [Range(0, double.MaxValue, ErrorMessage = "Price must be a non-negative value.")]
     public double Price { get; set; }
 
-    [Required]
-    [DateIsInFuture]
-    public DateTime StartDateTime { get; set; }
+    [Required] [DateIsInFuture] public DateTime StartDateTime { get; set; }
 
     [Required] public List<int>? SelectedCourtIds { get; set; }
 

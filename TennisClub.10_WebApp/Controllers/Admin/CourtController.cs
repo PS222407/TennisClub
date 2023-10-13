@@ -13,6 +13,7 @@ namespace TennisClub_0._1.Controllers.Admin;
 public class CourtController : Controller
 {
     private readonly ICourtService _courtService;
+
     private readonly CourtTransformer _courtTransformer = new();
 
     public CourtController(ICourtService courtService)
@@ -65,7 +66,7 @@ public class CourtController : Controller
         {
             return View();
         }
-        
+
         if (!_courtService.Create(_courtTransformer.RequestToModel(courtRequest)))
         {
             TempData["Message"] = "Fout tijdens het aanmaken.";

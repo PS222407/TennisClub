@@ -89,7 +89,7 @@ public class TournamentController : Controller
         {
             TempData["Message"] = "Fout tijdens het aanmaken.";
             TempData["MessageType"] = "danger";
-            
+
             tournamentRequest.CourtOptions = GetCourtOptions();
             return View(tournamentRequest);
         }

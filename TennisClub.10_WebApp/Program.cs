@@ -21,7 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));*/
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8, 0, 24));
+MySqlServerVersion serverVersion = new(new Version(8, 0, 24));
 builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseMySql(connectionString, serverVersion));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();

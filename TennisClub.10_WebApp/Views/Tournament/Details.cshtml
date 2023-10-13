@@ -26,7 +26,9 @@
     </div>
     <div class="row">
         <div class="col-md-9">
-            <div class="mb-2"><b>Prijs:</b> @Html.DisplayFor(model => model.Price)</div>
+            <div class="mb-2">
+                <b>Prijs:</b> @Html.DisplayFor(model => model.Price)
+            </div>
             @if (Model.Participants == null || !Model.Participants.Any())
             {
                 <div class="mb-2">Nog <b>@Model.MaxMembers</b> plekken over</div>
