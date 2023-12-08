@@ -12,7 +12,7 @@ public class UserRepository : Database, IUserRepository
             using MySqlConnection conn = new(ConnectionString);
             conn.Open();
 
-            using MySqlCommand cmd = new("SELECT EXISTS(SELECT id FROM aspnetusers WHERE Id = @id) AS `exists`;", conn);
+            using MySqlCommand cmd = new("SELECT EXISTS(SELECT id FROM AspNetUsers WHERE Id = @id) AS `exists`;", conn);
             cmd.Parameters.AddWithValue("@Id", id);
 
             using MySqlDataReader reader = cmd.ExecuteReader();

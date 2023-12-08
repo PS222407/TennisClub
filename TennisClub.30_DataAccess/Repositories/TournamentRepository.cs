@@ -23,7 +23,7 @@ public class TournamentRepository : Database, ITournamentRepository
                                          "LEFT JOIN CourtTournament AS ct ON t.Id = ct.TournamentsId " +
                                          "LEFT JOIN Court AS c ON ct.CourtsId = c.Id " +
                                          "LEFT JOIN TournamentUser AS tu ON t.Id = tu.TournamentsId " +
-                                         "LEFT JOIN AspnetUsers AS u ON tu.UsersId = u.Id;", conn);
+                                         "LEFT JOIN AspNetUsers AS u ON tu.UsersId = u.Id;", conn);
             using MySqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -99,7 +99,7 @@ public class TournamentRepository : Database, ITournamentRepository
                                          "LEFT JOIN CourtTournament AS ct ON t.Id = ct.TournamentsId " +
                                          "LEFT JOIN Court AS c ON ct.CourtsId = c.Id " +
                                          "LEFT JOIN TournamentUser AS tu ON t.Id = tu.TournamentsId " +
-                                         "LEFT JOIN AspnetUsers AS u ON tu.UsersId = u.Id " +
+                                         "LEFT JOIN AspNetUsers AS u ON tu.UsersId = u.Id " +
                                          "WHERE t.Id = @Id;", conn);
             cmd.Parameters.AddWithValue("@Id", id);
 
@@ -342,7 +342,7 @@ public class TournamentRepository : Database, ITournamentRepository
             using MySqlConnection conn = new(ConnectionString);
             conn.Open();
 
-            using MySqlCommand cmd = new("SELECT EXISTS(SELECT id FROM tournament WHERE Id = @id) AS `exists`;", conn);
+            using MySqlCommand cmd = new("SELECT EXISTS(SELECT id FROM Tournament WHERE Id = @id) AS `exists`;", conn);
             cmd.Parameters.AddWithValue("@Id", id);
 
             using MySqlDataReader reader = cmd.ExecuteReader();
